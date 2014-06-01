@@ -21,7 +21,7 @@ namespace ZulZula
             var valuesArray = values.ToArray();
             var datesArray = datesAsDoubles.ToArray();
 
-            return xlApp.WorksheetFunction.Xirr(valuesArray, datesArray)*100;
+            return xlApp.WorksheetFunction.Xirr(valuesArray, datesArray);
         }
 
     }
