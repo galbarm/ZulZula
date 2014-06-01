@@ -1,23 +1,18 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZulZula.TradeAlgorithms
 {
     public class BuyAfterFallTradeAlgorithm : ITradeAlgorithm
     {
         private Stock _stock;
-        private double _fallThreshold;
-        private double _raiseThreshold;
+        private double _fallThreshold = 5;
+        private double _raiseThreshold = 5;
 
-        public BuyAfterFallTradeAlgorithm(Stock stock, double fallThreshold, double raiseThreshold)
+        public void SetArgs(Stock stock, double arg0, double arg1, double arg2)
         {
             _stock = stock;
-            _fallThreshold = fallThreshold;
-            _raiseThreshold = raiseThreshold;
+            _fallThreshold = arg0;
+            _raiseThreshold = arg1;
         }
 
         public double CalculateReturn()
@@ -40,7 +35,11 @@ namespace ZulZula.TradeAlgorithms
                     if (shares == 0 & (((currentValue - entry.Value) / currentValue) * 100 >= _fallThreshold))
                     {
                         shares = cash/entry.Value;
-                        Console.WriteLine(string.Format("Buying on {0}, at price {1}", entry.Date, entry.Value));
+                        if (LogWriter != null)
+                        {
+                            LogWriter.Write(string.Format("Buying on {0}, at price {1}", entry.Date, entry.Value));
+                        }
+
                         continue;
                     }
 
@@ -48,7 +47,11 @@ namespace ZulZula.TradeAlgorithms
                     if (shares > 0 & (((entry.Value - currentValue) / currentValue) * 100 >= _raiseThreshold))
                     {
                         cash = shares*entry.Value;
-                        Console.WriteLine(string.Format("Selling on {0}, at price {1}", entry.Date, entry.Value));
+                        if (LogWriter != null)
+                        {
+                            LogWriter.Write(string.Format("Selling on {0}, at price {1}", entry.Date, entry.Value));
+                        }
+
                         shares = 0;
                     }
                 }
@@ -59,7 +62,6 @@ namespace ZulZula.TradeAlgorithms
             }
 
             double ans = ((cash - 1000000) / 1000000) * 100;
-            Console.WriteLine("CalculateReturn is returning {0}", ans);
 
             return ans;
         }
@@ -68,5 +70,27 @@ namespace ZulZula.TradeAlgorithms
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString()
+        {
+            return "Buy After Fall";
+        }
+
+        public double Arg0
+        {
+            get { return _fallThreshold; }
+        }
+
+        public double Arg1
+        {
+            get { return _raiseThreshold; }
+        }
+
+        public double Arg2
+        {
+            get { return 0; }
+        }
+
+        public ILogWriter LogWriter { set; private get; }
     }
 }

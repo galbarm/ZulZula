@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using ZulZula;
 using ZulZula.TradeAlgorithms;
@@ -36,7 +35,8 @@ namespace Tests
 
 
             var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod1", rates);
-            var alg = new BuyAfterFallTradeAlgorithm(stock, 40, 40);
+            var alg = new BuyAfterFallTradeAlgorithm();
+            alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
 
             Assert.IsTrue(ans > 99.99 & ans < 100.01 );
@@ -68,7 +68,8 @@ namespace Tests
 
 
             var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
-            var alg = new BuyAfterFallTradeAlgorithm(stock, 40, 40);
+            var alg = new BuyAfterFallTradeAlgorithm();
+            alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
 
             Assert.IsTrue(ans > 49.99 & ans < 50.01);
@@ -100,7 +101,8 @@ namespace Tests
 
 
             var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
-            var alg = new BuyAfterFallTradeAlgorithm(stock, 90, 90);
+            var alg = new BuyAfterFallTradeAlgorithm();
+            alg.SetArgs(stock, 90, 90, 0);
             var ans = alg.CalculateReturn();
 
             Assert.IsTrue(ans == 0);
@@ -113,7 +115,8 @@ namespace Tests
             Stock stock = reader.GetStock(string.Format("{0}\\..\\..\\..\\ZulZula\\Stocks\\Yahoo\\Google.csv", Environment.CurrentDirectory));
 
 
-            var alg = new BuyAfterFallTradeAlgorithm(stock, 5, 10);
+            var alg = new BuyAfterFallTradeAlgorithm();
+            alg.SetArgs(stock, 5, 10, 0);
             var ans = alg.CalculateReturn();
         }
     }

@@ -10,6 +10,11 @@ namespace ZulZula
             Rates = rates;
         }
 
+        public override string ToString()
+        {
+            return Name;
+        }
+
         public string Name { get; private set; }
         public IEnumerable<StockEntry> Rates { get; private set; }
     }
