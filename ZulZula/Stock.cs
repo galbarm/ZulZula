@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace ZulZula
 {
     public class Stock
     {
-        private Dictionary<DateTime, double> _rates;
-        private string _name;
-
-        public Stock(string name, Dictionary<DateTime, double> rates)
+        public Stock(string name, IEnumerable<StockEntry> rates)
         {
-            _name = name;
-            _rates = rates;
+            Name = name;
+            Rates = rates;
         }
+
+        public string Name { get; private set; }
+        public IEnumerable<StockEntry> Rates { get; private set; }
     }
 }

@@ -17,9 +17,6 @@ namespace ZulZula
         public MainForm()
         {
             InitializeComponent();
-
-            var reader = new YahooStocksReader();
-            Stock stock = reader.GetStock(string.Format("{0}\\..\\..\\Stocks\\Yahoo\\Google.csv", Environment.CurrentDirectory));
         }
     }
 }

@@ -49,6 +49,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IStockReader.cs" />
+    <Compile Include="StockEntry.cs" />
+    <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />
     <Compile Include="XirrCalculator.cs" />
     <Compile Include="YahooStocksReader.cs" />
     <Compile Include="MainForm.cs">
@@ -57,7 +59,7 @@
     <Compile Include="MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ITradeAlgorithm.cs" />
+    <Compile Include="TradeAlgorithms\ITradeAlgorithm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Stock.cs" />

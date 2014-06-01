@@ -9,7 +9,7 @@ namespace ZulZula
     {
         public Stock GetStock(string fullpath)
         {
-            var rates = new Dictionary<DateTime, double>();
+            var rates = new List<StockEntry>();
             var name = Path.GetFileNameWithoutExtension(fullpath);
 
             var parser = new TextFieldParser(fullpath) {TextFieldType = FieldType.Delimited};
@@ -23,12 +23,14 @@ namespace ZulZula
                 var fields = parser.ReadFields();
                 if (fields != null)
                 {
-                    DateTime date = DateTime.Parse(fields[0]);
-                    double value = double.Parse(fields[4]);
+                    var date = DateTime.Parse(fields[0]);
+                    var value = double.Parse(fields[4]);
 
-                    rates.Add(date, value);
+                    rates.Add(new StockEntry(date, value));
                 }
             }
+
+            rates.Reverse();
 
             var stock = new Stock(name, rates);
             
