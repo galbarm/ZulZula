@@ -17,9 +17,13 @@ namespace ZulZula
 {
     public partial class MainForm : Form
     {
+        private ILogWriter _userLog;
+
         public MainForm()
         {
             InitializeComponent();
+
+            _userLog = new LogWriterListView(_logListView);
 
             var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
             var reader = new YahooStocksReader();
@@ -41,6 +45,7 @@ namespace ZulZula
                 }
             }
 
+            _stocksListBox.SelectedIndex = 0;
             _algorithmsComboBox.SelectedIndex = 0;
         }
 
@@ -57,14 +62,14 @@ namespace ZulZula
 
         private void OnGoClick(object sender, EventArgs e)
         {
-            var stock = (Stock) _stocksListBox.SelectedItem;
-            var alg = (ITradeAlgorithm) _algorithmsComboBox.SelectedItem;
+            var stock = (Stock)_stocksListBox.SelectedItem;
+            var alg = (ITradeAlgorithm)_algorithmsComboBox.SelectedItem;
             alg.SetArgs(stock, double.Parse(_arg0TextBox.Text), double.Parse(_arg1TextBox.Text),
                 double.Parse(_arg2TextBox.Text));
-            alg.LogWriter = new LogWriterListView(_logListView);
+            alg.LogWriter = _userLog;
             var ans = alg.CalculateReturn();
 
-            _logListView.Items.Add(ans.ToString());
+            _userLog.Write(ans.ToString());
         }
 
         private void OnAlgorithmChanged(object sender, EventArgs e)
