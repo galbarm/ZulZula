@@ -11,6 +11,6 @@ namespace ZulZula
     {
         void Initialize(IUnityContainer container, IList<StockName> stockSymbols, DateTime startDate, DateTime endDate);
         string ConvertNameToSymbol(StockName name);
-        Stock GetStockFromRemote(StockName name);
+        Stock GetStock(StockName name);
     }
 }

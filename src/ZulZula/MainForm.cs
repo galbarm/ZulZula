@@ -36,11 +36,14 @@ namespace ZulZula
             
             //Todo - Initialize the stock factory with the dates we wish to query - use the winform for this 
             //THIS IS A DEMO: start time -> Today 2 years ago
+
+            //Notice: Currently we fetch the data from remote - view the initialize method in StockFactory
+            //It is calling .IDataProvider.GetStockFromRemote(..) -> We should Initialize the StockFactory with parameters...
             DateTime startTime = new DateTime(DateTime.Today.Year - 2, DateTime.Today.Month, DateTime.Today.Day, 10, 39, 30);
             stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, DateTime.UtcNow);
 
-            var msftStockData = stockFactory.GetStockFromRemote(StockName.Microsoft);
-            var googleStockData = stockFactory.GetStockFromRemote(StockName.Google);
+            var msftStockData = stockFactory.GetStock(StockName.Microsoft);
+            var googleStockData = stockFactory.GetStock(StockName.Google);
             
             
 

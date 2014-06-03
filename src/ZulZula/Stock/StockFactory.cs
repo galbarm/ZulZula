@@ -51,7 +51,7 @@ namespace ZulZula
             }
         }
 
-        public Stock GetStockFromRemote(StockName name)
+        public Stock GetStock(StockName name)
         {
             return _stockHolder[name];
         }
