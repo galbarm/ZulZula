@@ -15,7 +15,7 @@ namespace ZulZula
         private IUnityContainer _container;
         private ILogger _logger;
 
-        public void Initialize(IUnityContainer container,IList<string> stockSymbols)
+        public void Initialize(IUnityContainer container,IList<string> stockSymbols, DateTime startTime, DateTime endTime)
         {
             _container = container;
             _logger = _container.Resolve<ILogger>();

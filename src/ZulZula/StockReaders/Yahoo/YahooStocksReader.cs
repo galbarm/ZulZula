@@ -10,7 +10,7 @@ namespace ZulZula
 
         public Stock GetStock(string fullpath)
         {
-            var rates = new List<StockEntry>();
+            var rates = new List<IStockEntry>();
             var name = Path.GetFileNameWithoutExtension(fullpath);
 
             var parser = new TextFieldParser(fullpath) {TextFieldType = FieldType.Delimited};

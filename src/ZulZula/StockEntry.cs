@@ -2,7 +2,7 @@
 
 namespace ZulZula
 {
-    public class StockEntry
+    public class StockEntry : IStockEntry
     {
         public StockEntry(DateTime date,double open, double high, double low, double close, double volume)
         {
@@ -14,11 +14,11 @@ namespace ZulZula
             Volume = volume;
         }
 
-        public DateTime Date { get; private set; }
-        public double Open { get; private set; }
-        public double High { get; private set; }
-        public double Low { get; private set; }
-        public double Close { get; private set; }
-        public double Volume { get; private set; }
+        public DateTime Date { get; set; }
+        public double Open { get; set; }
+        public double High { get; set; }
+        public double Low { get; set; }
+        public double Close { get; set; }
+        public double Volume { get; set; }
     }
 }
