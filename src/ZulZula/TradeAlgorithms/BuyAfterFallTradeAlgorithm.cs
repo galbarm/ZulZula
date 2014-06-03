@@ -37,7 +37,7 @@ namespace ZulZula.TradeAlgorithms
                         shares = cash / entry.Close;
                         if (LogWriter != null)
                         {
-                            LogWriter.Write(string.Format("Buying on {0}, at price {1}", entry.Date, entry.Close));
+                            LogWriter.Write(string.Format("Buying on {0}, at price {1}", entry.Date.ToString("d"), entry.Close));
                         }
 
                         continue;
@@ -49,7 +49,7 @@ namespace ZulZula.TradeAlgorithms
                         cash = shares * entry.Close;
                         if (LogWriter != null)
                         {
-                            LogWriter.Write(string.Format("Selling on {0}, at price {1}", entry.Date, entry.Close));
+                            LogWriter.Write(string.Format("Selling on {0}, at price {1}", entry.Date.ToString("d"), entry.Close));
                         }
 
                         shares = 0;

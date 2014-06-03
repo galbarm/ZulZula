@@ -16,6 +16,7 @@ namespace ZulZula
             if (_listView != null)
             {
                 _listView.Items.Add(message);
+                _listView.Items[_listView.Items.Count - 1].EnsureVisible();
             }
         }
     }

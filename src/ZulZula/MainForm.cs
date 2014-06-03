@@ -19,17 +19,20 @@ namespace ZulZula
     public partial class MainForm : Form
     {
         private ILogger _logger;
+        private ILogWriter _userLog;
+        private IUnityContainer _container = new UnityContainer();
         public MainForm()
         {
             InitializeComponent();
 
-            //This is the entry point for our application, lets initialize the container and the logger and inject them later on to our classes
-            //No static container is needed
-            IUnityContainer container = new UnityContainer();
+            _userLog = new LogWriterListView(_logListView);
+
             //create logger
             _logger = new LoggerImpl();
+            _container.RegisterInstance(typeof(ILogger), _logger);
 
-            container.RegisterInstance(typeof(ILogger), _logger);
+            //From this point, when you want logger, you do:
+            //ILogger logger = _container.Resolve<ILogger>(); **OR** _container.Resolve<ILogger>().Debug("")..
 
             _logger.Debug("ZulZula has started");
             var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
@@ -52,6 +55,7 @@ namespace ZulZula
                 }
             }
 
+            _stocksListBox.SelectedIndex = 0;
             _algorithmsComboBox.SelectedIndex = 0;
         }
 
@@ -68,14 +72,14 @@ namespace ZulZula
 
         private void OnGoClick(object sender, EventArgs e)
         {
-            var stock = (Stock) _stocksListBox.SelectedItem;
-            var alg = (ITradeAlgorithm) _algorithmsComboBox.SelectedItem;
+            var stock = (Stock)_stocksListBox.SelectedItem;
+            var alg = (ITradeAlgorithm)_algorithmsComboBox.SelectedItem;
             alg.SetArgs(stock, double.Parse(_arg0TextBox.Text), double.Parse(_arg1TextBox.Text),
                 double.Parse(_arg2TextBox.Text));
-            alg.LogWriter = new LogWriterListView(_logListView);
+            alg.LogWriter = _userLog;
             var ans = alg.CalculateReturn();
 
-            _logListView.Items.Add(ans.ToString());
+            _userLog.Write(ans.ToString());
         }
 
         private void OnAlgorithmChanged(object sender, EventArgs e)
