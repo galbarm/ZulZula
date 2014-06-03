@@ -32,24 +32,24 @@ namespace ZulZula.TradeAlgorithms
                     }
 
                     //buy
-                    if (shares == 0 & (((currentValue - entry.Value) / currentValue) * 100 >= _fallThreshold))
+                    if (shares == 0 & (((currentValue - entry.Close) / currentValue) * 100 >= _fallThreshold))
                     {
-                        shares = cash/entry.Value;
+                        shares = cash / entry.Close;
                         if (LogWriter != null)
                         {
-                            LogWriter.Write(string.Format("Buying on {0}, at price {1}", entry.Date, entry.Value));
+                            LogWriter.Write(string.Format("Buying on {0}, at price {1}", entry.Date, entry.Close));
                         }
 
                         continue;
                     }
 
                     //sell
-                    if (shares > 0 & (((entry.Value - currentValue) / currentValue) * 100 >= _raiseThreshold))
+                    if (shares > 0 & (((entry.Close - currentValue) / currentValue) * 100 >= _raiseThreshold))
                     {
-                        cash = shares*entry.Value;
+                        cash = shares * entry.Close;
                         if (LogWriter != null)
                         {
-                            LogWriter.Write(string.Format("Selling on {0}, at price {1}", entry.Date, entry.Value));
+                            LogWriter.Write(string.Format("Selling on {0}, at price {1}", entry.Date, entry.Close));
                         }
 
                         shares = 0;
@@ -57,7 +57,7 @@ namespace ZulZula.TradeAlgorithms
                 }
                 finally
                 {
-                    currentValue = entry.Value;
+                    currentValue = entry.Close;
                 }
             }
 

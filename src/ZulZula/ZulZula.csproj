@@ -17,19 +17,21 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\Build\debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\Build\release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
@@ -51,10 +53,11 @@
     <Compile Include="ILogWriter.cs" />
     <Compile Include="IStockReader.cs" />
     <Compile Include="StockEntry.cs" />
+    <Compile Include="StockFactory.cs" />
     <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />
     <Compile Include="LogWriterListView.cs" />
     <Compile Include="XirrCalculator.cs" />
-    <Compile Include="YahooStocksReader.cs" />
+    <Compile Include="StockReaders\YahooStocksReader.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -86,7 +89,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Stocks\Yahoo\Google.csv" />
+    <None Include="LocalStocksData\Yahoo\Google.csv" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

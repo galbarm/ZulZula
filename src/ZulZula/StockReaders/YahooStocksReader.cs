@@ -23,10 +23,17 @@ namespace ZulZula
                 var fields = parser.ReadFields();
                 if (fields != null)
                 {
-                    var date = DateTime.Parse(fields[0]);
-                    var value = double.Parse(fields[4]);
-
-                    rates.Add(new StockEntry(date, value));
+                    try
+                    {
+                        var date = DateTime.Parse(fields[0]);
+                        var value = double.Parse(fields[4]);
+                        var stockEntry = new StockEntry(DateTime.Parse(fields[0]), double.Parse(fields[1]), double.Parse(fields[2]), double.Parse(fields[3]), double.Parse(fields[4]), double.Parse(fields[4]));
+                        rates.Add(stockEntry);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error has occurd while parsing single line in file={0}. continue to next line..Exception Message = {1}", name, ex.Message);
+                    }
                 }
             }
 

@@ -14,24 +14,29 @@ namespace Tests
         {
             var rates = new List<StockEntry>();
             var date = new DateTime(2010, 01, 01);
-            double value = 100;
-            rates.Add(new StockEntry(date, value));
+            var open = 3;
+            var high = 5;
+            var low = 5;
+            var close = 5;
+            var volume = 30000;
+            
+            rates.Add(new StockEntry(date, open, high,low,close,volume));
 
             date = new DateTime(2010,01,02);
-            value = 100;
-            rates.Add(new StockEntry(date, value));
+            close = 100;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 03);
-            value = 50;
-            rates.Add(new StockEntry(date, value));
+            close = 50;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 04);
-            value = 100;
-            rates.Add(new StockEntry(date, value));
+            close = 100;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 05);
-            value = 100;
-            rates.Add(new StockEntry(date, value));
+            close = 100;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
 
             var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod1", rates);
@@ -47,24 +52,29 @@ namespace Tests
         {
             var rates = new List<StockEntry>();
             var date = new DateTime(2010, 01, 01);
-            double value = 100;
-            rates.Add(new StockEntry(date, value));
+            var open = 3;
+            var high = 5;
+            var low = 5;
+            var close = 5;
+            var volume = 30000;
+
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 02);
-            value = 100;
-            rates.Add(new StockEntry(date, value));
+            close = 100;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 03);
-            value = 50;
-            rates.Add(new StockEntry(date, value));
+            close = 50;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 04);
-            value = 75;
-            rates.Add(new StockEntry(date, value));
+            close = 75;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 05);
-            value = 75;
-            rates.Add(new StockEntry(date, value));
+            close = 75;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
 
             var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
@@ -80,24 +90,29 @@ namespace Tests
         {
             var rates = new List<StockEntry>();
             var date = new DateTime(2010, 01, 01);
-            double value = 100;
-            rates.Add(new StockEntry(date, value));
+            var open = 3;
+            var high = 5;
+            var low = 5;
+            var close = 5;
+            var volume = 30000;
+
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 02);
-            value = 100;
-            rates.Add(new StockEntry(date, value));
+            close = 100;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 03);
-            value = 50;
-            rates.Add(new StockEntry(date, value));
+            close = 50;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 04);
-            value = 75;
-            rates.Add(new StockEntry(date, value));
+            close = 75;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
             date = new DateTime(2010, 01, 05);
-            value = 75;
-            rates.Add(new StockEntry(date, value));
+            close = 75;
+            rates.Add(new StockEntry(date, open, high, low, close, volume));
 
 
             var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);

@@ -21,7 +21,7 @@ namespace ZulZula
         {
             InitializeComponent();
 
-            var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\..\\ZulZula\\Stocks\\Yahoo", Environment.CurrentDirectory));
+            var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
             var reader = new YahooStocksReader();
             foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
             {
