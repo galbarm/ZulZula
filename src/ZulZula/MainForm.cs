@@ -46,7 +46,7 @@ namespace ZulZula
 
             _logger.Debug("ZulZula has started");
             var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
-            var reader = new YahooStocksReader(_container);
+            var reader = new YahooDataProvider(_container);
             foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
             {
                 var stock = reader.GetStockFromLocal(fileInfo.FullName);

@@ -8,7 +8,7 @@ using Microsoft.Practices.Unity;
 namespace ZulZula
 {
     /**
-     * YahooStocksReader class helps us get data from Yahoo finance API site.
+     * get data from Yahoo finance API site.
      * For explaination how to pull the data visit the following URLS:
      * http://greenido.wordpress.com/2009/12/22/yahoo-finance-hidden-api/
      * https://code.google.com/p/yahoo-finance-managed/wiki/csvHistQuotesDownload
@@ -16,12 +16,12 @@ namespace ZulZula
      * It appears yahoo dont have this documented public.. so we fetch data using google :+)
      * 
      **/
-    public class YahooStocksReader : IStockReader
+    public class YahooDataProvider : IDataProvider
     {
         private IUnityContainer _container;
         private IStockFactory _stockFactory;
         private ILogger _logger;
-        public YahooStocksReader(IUnityContainer container)
+        public YahooDataProvider(IUnityContainer container)
         {
             _container = container;
             _logger = _container.Resolve<ILogger>();

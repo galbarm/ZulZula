@@ -29,7 +29,7 @@ namespace ZulZula
         private IDictionary<StockName, string> _stockNameToSymbolMap = new Dictionary<StockName, string>();
 
         //We currently receive data from yahoo, so there is only 1 stock reader available. if later on we will need additional data, or yahoo will be down.. implement additional
-        private IDictionary<DataProvider, IStockReader> _symbolToStockReaderMapping = new Dictionary<DataProvider, IStockReader>();
+        private IDictionary<DataProvider, IDataProvider> _dataProviders = new Dictionary<DataProvider, IDataProvider>();
         private DataProvider _defaultDataProvider = DataProvider.Yahoo;
 
         public void Initialize(IUnityContainer container, IList<StockName> stocks, DateTime startDate, DateTime endDate)
@@ -45,7 +45,7 @@ namespace ZulZula
                 if (!_stockHolder.ContainsKey(singleStock))
                 {
                     //Does not exist.. lets do it
-                    var stockData = _symbolToStockReaderMapping[_defaultDataProvider].GetStockFromRemote(singleStock, startDate, endDate);
+                    var stockData = _dataProviders[_defaultDataProvider].GetStockFromRemote(singleStock, startDate, endDate);
                     _stockHolder[singleStock] = stockData;
                 }
             }
@@ -61,6 +61,10 @@ namespace ZulZula
             return _stockNameToSymbolMap[name];
         }
 
+        /**
+         * This method should be filled with all the stocks we support
+         * We have to find a way to fill it automatically
+         **/
         private void FillStockNameToSymbol() 
         {
             _stockNameToSymbolMap[StockName.Yahoo] = "YHOO";
@@ -70,7 +74,7 @@ namespace ZulZula
 
         private void MapStockReaders() 
         {
-            _symbolToStockReaderMapping[DataProvider.Yahoo] = new YahooStocksReader(_container);
+            _dataProviders[DataProvider.Yahoo] = new YahooDataProvider(_container);
         }
     }
 }

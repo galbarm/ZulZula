@@ -79,7 +79,7 @@
     <Compile Include="ILogWriter.cs" />
     <Compile Include="Stock\HistoricalStockEntry.cs" />
     <Compile Include="Stock\IStockEntry.cs" />
-    <Compile Include="IStockReader.cs" />
+    <Compile Include="IDataProvider.cs" />
     <Compile Include="LoggerImpl.cs" />
     <Compile Include="Stock\IStockFactory.cs" />
     <Compile Include="Stock\StockEntry.cs" />
@@ -88,7 +88,7 @@
     <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />
     <Compile Include="LogWriterListView.cs" />
     <Compile Include="XirrCalculator.cs" />
-    <Compile Include="StockReaders\Yahoo\YahooStocksReader.cs" />
+    <Compile Include="StockReaders\Yahoo\YahooDataProvider.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
