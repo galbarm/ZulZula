@@ -37,7 +37,13 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
+    <Reference Include="Microsoft.Practices.Unity">
+      <HintPath>..\..\external\unity\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="NLog">
+      <HintPath>..\..\external\nlog\2.0.0.2000\.NET Framework 4.0\NLog.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -50,8 +56,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ILogger.cs" />
     <Compile Include="ILogWriter.cs" />
     <Compile Include="IStockReader.cs" />
+    <Compile Include="LoggerImpl.cs" />
     <Compile Include="StockEntry.cs" />
     <Compile Include="StockFactory.cs" />
     <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />

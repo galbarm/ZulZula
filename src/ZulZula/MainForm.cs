@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Practices.Unity;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -17,10 +18,20 @@ namespace ZulZula
 {
     public partial class MainForm : Form
     {
+        private ILogger _logger;
         public MainForm()
         {
             InitializeComponent();
 
+            //This is the entry point for our application, lets initialize the container and the logger and inject them later on to our classes
+            //No static container is needed
+            IUnityContainer container = new UnityContainer();
+            //create logger
+            _logger = new LoggerImpl();
+
+            container.RegisterInstance(typeof(ILogger), _logger);
+
+            _logger.Debug("ZulZula has started");
             var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
             var reader = new YahooStocksReader();
             foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
