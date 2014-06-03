@@ -7,6 +7,7 @@ namespace ZulZula
 {
     public class YahooStocksReader : IStockReader
     {
+
         public Stock GetStock(string fullpath)
         {
             var rates = new List<StockEntry>();
