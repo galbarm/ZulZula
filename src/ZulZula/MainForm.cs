@@ -21,29 +21,24 @@ namespace ZulZula
         private ILogger _logger;
         private ILogWriter _userLog;
         private IUnityContainer _container = new UnityContainer();
+        private IStockFactory _stockFactory = new StockFactory();
         public MainForm()
         {
             InitializeComponent();
 
+            InitializeContainer();
             _userLog = new LogWriterListView(_logListView);
-
-            //create logger
-            _logger = new LoggerImpl();
-            _container.RegisterInstance(typeof(ILogger), _logger);
-
-            IStockFactory stockFactory = new StockFactory();
-            _container.RegisterInstance(typeof(IStockFactory), stockFactory);
-            
+         
             //Todo - Initialize the stock factory with the dates we wish to query - use the winform for this 
             //THIS IS A DEMO: start time -> Today 2 years ago
 
             //Notice: Currently we fetch the data from remote - view the initialize method in StockFactory
             //It is calling .IDataProvider.GetStockFromRemote(..) -> We should Initialize the StockFactory with parameters...
             DateTime startTime = new DateTime(DateTime.Today.Year - 2, DateTime.Today.Month, DateTime.Today.Day, 10, 39, 30);
-            stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, DateTime.UtcNow);
+            _stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, DateTime.UtcNow);
 
-            var msftStockData = stockFactory.GetStock(StockName.Microsoft);
-            var googleStockData = stockFactory.GetStock(StockName.Google);
+            var msftStockData = _stockFactory.GetStock(StockName.Microsoft);
+            var googleStockData = _stockFactory.GetStock(StockName.Google);
             
             
 
@@ -106,6 +101,15 @@ namespace ZulZula
         private void OnClearLogClick(object sender, EventArgs e)
         {
             _logListView.Items.Clear();
+        }
+
+        private void InitializeContainer()
+        {
+            _logger = new LoggerImpl();
+            _container.RegisterInstance(typeof(ILogger), _logger);
+
+            IStockFactory stockFactory = new StockFactory();
+            _container.RegisterInstance(typeof(IStockFactory), stockFactory);
         }
     }
 }
