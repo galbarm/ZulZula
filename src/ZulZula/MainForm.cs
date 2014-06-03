@@ -43,10 +43,10 @@ namespace ZulZula
                 _stocksListBox.Items.Add(stock);
             }
 
-            IEnumerable<Type> ans = AppDomain.CurrentDomain.GetAssemblies().SelectMany(
-                assembly => assembly.GetTypes()).Where(type => typeof (ITradeAlgorithm).IsAssignableFrom(type));
+            Assembly assembly = Assembly.GetExecutingAssembly();
+            IEnumerable<Type> algos = assembly.GetTypes().Where(type => typeof (ITradeAlgorithm).IsAssignableFrom(type));
 
-            foreach (Type type in ans)
+            foreach (Type type in algos)
             {
                 if (type.IsClass)
                 {
