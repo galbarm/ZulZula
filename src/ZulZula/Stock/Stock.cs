@@ -4,7 +4,7 @@ namespace ZulZula
 {
     public class Stock
     {
-        public Stock(string name, IEnumerable<IStockEntry> rates)
+        public Stock(StockName name, IEnumerable<IStockEntry> rates)
         {
             Name = name;
             Rates = rates;
@@ -12,10 +12,10 @@ namespace ZulZula
 
         public override string ToString()
         {
-            return Name;
+            return Name.ToString();
         }
 
-        public string Name { get; private set; }
+        public StockName Name { get; private set; }
         public IEnumerable<IStockEntry> Rates { get; private set; }
     }
 }

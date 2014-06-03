@@ -39,7 +39,8 @@ namespace Tests
             rates.Add(new StockEntry(date, open, high, low, close, volume));
 
 
-            var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod1", rates);
+            //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod1", rates);//OLD
+            var stock = new Stock(StockName.TestStock, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
             alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
@@ -77,7 +78,8 @@ namespace Tests
             rates.Add(new StockEntry(date, open, high, low, close, volume));
 
 
-            var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
+            //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
+            var stock = new Stock(StockName.TestStock, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
             alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
@@ -115,7 +117,8 @@ namespace Tests
             rates.Add(new StockEntry(date, open, high, low, close, volume));
 
 
-            var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
+            //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
+            var stock = new Stock(StockName.TestStock, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
             alg.SetArgs(stock, 90, 90, 0);
             var ans = alg.CalculateReturn();
@@ -123,16 +126,16 @@ namespace Tests
             Assert.IsTrue(ans == 0);
         }
 
-        [TestMethod]
-        public void TestMethod4()
-        {
-            var reader = new YahooStocksReader();
-            Stock stock = reader.GetStock(string.Format("{0}\\..\\..\\..\\ZulZula\\Stocks\\Yahoo\\Google.csv", Environment.CurrentDirectory));
+        //[TestMethod]
+        //public void TestMethod4()
+        //{
+        //    var reader = new YahooStocksReader();
+        //    Stock stock = reader.GetStockFromLocal(string.Format("{0}\\..\\..\\..\\ZulZula\\Stocks\\Yahoo\\Google.csv", Environment.CurrentDirectory));
 
 
-            var alg = new BuyAfterFallTradeAlgorithm();
-            alg.SetArgs(stock, 5, 10, 0);
-            var ans = alg.CalculateReturn();
-        }
+        //    var alg = new BuyAfterFallTradeAlgorithm();
+        //    alg.SetArgs(stock, 5, 10, 0);
+        //    var ans = alg.CalculateReturn();
+        //}
     }
 }

@@ -4,6 +4,8 @@ namespace ZulZula
 {
     public class StockEntry : IStockEntry
     {
+        public StockEntry()
+        { }
         public StockEntry(DateTime date,double open, double high, double low, double close, double volume)
         {
             Date = date;

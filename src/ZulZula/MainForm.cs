@@ -31,15 +31,25 @@ namespace ZulZula
             _logger = new LoggerImpl();
             _container.RegisterInstance(typeof(ILogger), _logger);
 
-            //From this point, when you want logger, you do:
-            //ILogger logger = _container.Resolve<ILogger>(); **OR** _container.Resolve<ILogger>().Debug("")..
+            IStockFactory stockFactory = new StockFactory();
+            _container.RegisterInstance(typeof(IStockFactory), stockFactory);
+            
+            //Todo - Initialize the stock factory with the dates we wish to query - use the winform for this 
+            //THIS IS A DEMO: start time -> Today 2 years ago
+            DateTime startTime = new DateTime(DateTime.Today.Year - 2, DateTime.Today.Month, DateTime.Today.Day, 10, 39, 30);
+            stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, DateTime.UtcNow);
+
+            var msftStockData = stockFactory.GetStockFromRemote(StockName.Microsoft);
+            var googleStockData = stockFactory.GetStockFromRemote(StockName.Google);
+            
+            
 
             _logger.Debug("ZulZula has started");
             var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
-            var reader = new YahooStocksReader();
+            var reader = new YahooStocksReader(_container);
             foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
             {
-                var stock = reader.GetStock(fileInfo.FullName);
+                var stock = reader.GetStockFromLocal(fileInfo.FullName);
                 _stocksListBox.Items.Add(stock);
             }
 

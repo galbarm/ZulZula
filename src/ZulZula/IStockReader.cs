@@ -1,7 +1,9 @@
-﻿namespace ZulZula
+﻿using System;
+namespace ZulZula
 {
     public interface IStockReader
     {
-        Stock GetStock(string fullpath);
+        Stock GetStockFromLocal(string fullFilePath);
+        Stock GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData);
     }
 }
