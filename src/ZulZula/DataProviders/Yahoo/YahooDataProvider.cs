@@ -35,14 +35,20 @@ namespace ZulZula
             //I know it should be something like this:
             //http://ichart.finance.yahoo.com/table.csv?s=MSFT&a=0&b=1&c=2000
             //That url bring us data for stock microsoft from startDate year 1.1.2000
-            var startYear = startDate.Year;
+            var c = startDate.Year;
+            var a = startDate.Month - 1;
+            var b = startDate.Day;
+
+            var f = endData.Year;
+            var d = endData.Month - 1;
+            var e = endData.Day;
             IList<IStockEntry> entries = new List<IStockEntry>();
  
             using (WebClient web = new WebClient())
             {
                 _logger.DebugFormat("{0} is about to get data from remote URL", this.GetType().Name);
                 //string data = web.DownloadString(string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&c={1}", _stockFactory.ConvertNameToSymbol(stockName), 2014));
-                string data = web.DownloadString(string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&a=0&b=1&c={1}", _stockFactory.ConvertNameToSymbol(stockName), startYear));  
+                string data = web.DownloadString(string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&a={1}&b={2}&c={3}&d={4}&e={5}&f={6}", _stockFactory.ConvertNameToSymbol(stockName), a,b,c,d,e,f));  
                 _logger.DebugFormat("received string, Length={0}", data.Length);
                 data =  data.Replace("r","");
 

@@ -21,7 +21,7 @@ namespace ZulZula
         private ILogger _logger;
         private ILogWriter _userLog;
         private IUnityContainer _container = new UnityContainer();
-        private IStockFactory _stockFactory = new StockFactory();
+        private IStockFactory _stockFactory;
         public MainForm()
         {
             InitializeComponent();
@@ -34,9 +34,10 @@ namespace ZulZula
 
             //Notice: Currently we fetch the data from remote - view the initialize method in StockFactory
             //It is calling .IDataProvider.GetStockFromRemote(..) -> We should Initialize the StockFactory with parameters...
-            DateTime startTime = new DateTime(DateTime.Today.Year - 2, DateTime.Today.Month, DateTime.Today.Day, 10, 39, 30);
-            _stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, DateTime.UtcNow);
-
+            //Lets set the start query time to be 2 months ago and end time 1 month ago
+            DateTime startTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month - 2, DateTime.Today.Day);
+            DateTime endTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, DateTime.Today.Day);
+            _stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, endTime);
             var msftStockData = _stockFactory.GetStock(StockName.Microsoft);
             var googleStockData = _stockFactory.GetStock(StockName.Google);
             
@@ -110,6 +111,7 @@ namespace ZulZula
 
             IStockFactory stockFactory = new StockFactory();
             _container.RegisterInstance(typeof(IStockFactory), stockFactory);
+            _stockFactory = stockFactory;
         }
     }
 }
