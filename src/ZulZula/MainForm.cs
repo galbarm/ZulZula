@@ -25,33 +25,31 @@ namespace ZulZula
         public MainForm()
         {
             InitializeComponent();
-
             InitializeContainer();
-            _userLog = new LogWriterListView(_logListView);
-         
-            //Todo - Initialize the stock factory with the dates we wish to query - use the winform for this 
-            //THIS IS A DEMO: start time -> Today 2 years ago
-
-            //Notice: Currently we fetch the data from remote - view the initialize method in StockFactory
-            //It is calling .IDataProvider.GetStockFromRemote(..) -> We should Initialize the StockFactory with parameters...
-            //Lets set the start query time to be 2 months ago and end time 1 month ago
-            DateTime startTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month - 2, DateTime.Today.Day);
-            DateTime endTime = new DateTime(DateTime.Today.Year, DateTime.Today.Month - 1, DateTime.Today.Day);
-            _stockFactory.Initialize(_container, new List<StockName>() { StockName.Google, StockName.Microsoft }, startTime, endTime);
-            var msftStockData = _stockFactory.GetStock(StockName.Microsoft);
-            var googleStockData = _stockFactory.GetStock(StockName.Google);
-            
-            
 
             _logger.Debug("ZulZula has started");
-            var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
-            var reader = new YahooDataProvider(_container);
-            foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
+
+            _userLog = new LogWriterListView(_logListView);
+            
+            // init all stocks, from all time.
+            _stockFactory.Initialize(_container, Enum.GetValues(typeof(StockName)).Cast<StockName>(), DateTime.MinValue, DateTime.Now);
+            foreach (StockName stockName in Enum.GetValues(typeof(StockName)))
             {
-                var stock = reader.GetStockFromLocal(fileInfo.FullName);
+                var stock = _stockFactory.GetStock(stockName);
                 _stocksListBox.Items.Add(stock);
             }
+            
 
+            //var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
+            //var reader = new YahooDataProvider(_container);
+            //foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
+            //{
+            //    var stock = reader.GetStockFromLocal(fileInfo.FullName);
+            //    _stocksListBox.Items.Add(stock);
+            //}
+
+
+            //init algorithms
             Assembly assembly = Assembly.GetExecutingAssembly();
             IEnumerable<Type> algos = assembly.GetTypes().Where(type => typeof (ITradeAlgorithm).IsAssignableFrom(type));
 

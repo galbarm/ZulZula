@@ -1,10 +1,6 @@
 ﻿using Microsoft.Practices.Unity;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ZulZula
 {
@@ -13,7 +9,7 @@ namespace ZulZula
         Google,
         Yahoo,
         Microsoft,
-        TestStock
+        Amazon,
     }
     public enum DataProvider
     { 
@@ -32,7 +28,7 @@ namespace ZulZula
         private IDictionary<DataProvider, IDataProvider> _dataProviders = new Dictionary<DataProvider, IDataProvider>();
         private DataProvider _defaultDataProvider = DataProvider.Yahoo;
 
-        public void Initialize(IUnityContainer container, IList<StockName> stocks, DateTime startDate, DateTime endDate)
+        public void Initialize(IUnityContainer container, IEnumerable<StockName> stocks, DateTime startDate, DateTime endDate)
         {
             _container = container;
             _logger = _container.Resolve<ILogger>();
@@ -68,8 +64,9 @@ namespace ZulZula
         private void FillStockNameToSymbol() 
         {
             _stockNameToSymbolMap[StockName.Yahoo] = "YHOO";
-            _stockNameToSymbolMap[StockName.Google] = "GOOG";
+            _stockNameToSymbolMap[StockName.Google] = "GOOGL";
             _stockNameToSymbolMap[StockName.Microsoft] = "MSFT";
+            _stockNameToSymbolMap[StockName.Amazon] = "AMZN";
         }
 
         private void MapStockReaders() 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Microsoft.VisualBasic.FileIO;
 using System.Net;
 using Microsoft.Practices.Unity;
@@ -42,13 +43,15 @@ namespace ZulZula
             var f = endData.Year;
             var d = endData.Month - 1;
             var e = endData.Day;
-            IList<IStockEntry> entries = new List<IStockEntry>();
+            var entries = new List<IStockEntry>();
  
             using (WebClient web = new WebClient())
             {
                 _logger.DebugFormat("{0} is about to get data from remote URL", this.GetType().Name);
                 //string data = web.DownloadString(string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&c={1}", _stockFactory.ConvertNameToSymbol(stockName), 2014));
-                string data = web.DownloadString(string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&a={1}&b={2}&c={3}&d={4}&e={5}&f={6}", _stockFactory.ConvertNameToSymbol(stockName), a,b,c,d,e,f));  
+                string downloadString = string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&a={1}&b={2}&c={3}&d={4}&e={5}&f={6}",
+                    _stockFactory.ConvertNameToSymbol(stockName), a, b, c, d, e, f);
+                string data = web.DownloadString(downloadString);  
                 _logger.DebugFormat("received string, Length={0}", data.Length);
                 data =  data.Replace("r","");
 
@@ -72,6 +75,9 @@ namespace ZulZula
                     //_logger.DebugFormat("Successfuly created Historical Stock Entry={0}", hs.ShortDebugDescription()); //overloads the log file
                     entries.Add(hs);
                 }
+
+                entries.Reverse();
+
                 return new Stock(stockName, entries);
             }
         }
