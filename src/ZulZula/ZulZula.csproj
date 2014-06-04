@@ -86,7 +86,7 @@
     <Compile Include="Stock\StockFactory.cs" />
     <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />
     <Compile Include="LogWriterListView.cs" />
-    <Compile Include="XirrCalculator.cs" />
+    <Compile Include="TradeAlgorithms\TradeResult.cs" />
     <Compile Include="DataProviders\Yahoo\YahooDataProvider.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

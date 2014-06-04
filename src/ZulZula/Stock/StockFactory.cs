@@ -10,6 +10,10 @@ namespace ZulZula
         Yahoo,
         Microsoft,
         Amazon,
+        Cadence,
+        Intel,
+        Apple,
+        Cisco,
     }
     public enum DataProvider
     { 
@@ -67,6 +71,10 @@ namespace ZulZula
             _stockNameToSymbolMap[StockName.Google] = "GOOGL";
             _stockNameToSymbolMap[StockName.Microsoft] = "MSFT";
             _stockNameToSymbolMap[StockName.Amazon] = "AMZN";
+            _stockNameToSymbolMap[StockName.Cadence] = "CDNS";
+            _stockNameToSymbolMap[StockName.Intel] = "INTC";
+            _stockNameToSymbolMap[StockName.Apple] = "AAPL";
+            _stockNameToSymbolMap[StockName.Cisco] = "CSCO";
         }
 
         private void MapStockReaders() 

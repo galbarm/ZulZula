@@ -169,7 +169,7 @@
             // _goButton
             // 
             this._goButton.Enabled = false;
-            this._goButton.Location = new System.Drawing.Point(456, 175);
+            this._goButton.Location = new System.Drawing.Point(625, 175);
             this._goButton.Name = "_goButton";
             this._goButton.Size = new System.Drawing.Size(75, 23);
             this._goButton.TabIndex = 15;
@@ -186,7 +186,7 @@
             this._logListView.Location = new System.Drawing.Point(12, 204);
             this._logListView.MultiSelect = false;
             this._logListView.Name = "_logListView";
-            this._logListView.Size = new System.Drawing.Size(519, 354);
+            this._logListView.Size = new System.Drawing.Size(688, 354);
             this._logListView.TabIndex = 16;
             this._logListView.UseCompatibleStateImageBehavior = false;
             this._logListView.View = System.Windows.Forms.View.Details;
@@ -194,11 +194,11 @@
             // _logColumn
             // 
             this._logColumn.Text = "Log";
-            this._logColumn.Width = 493;
+            this._logColumn.Width = 680;
             // 
             // _clearLogButton
             // 
-            this._clearLogButton.Location = new System.Drawing.Point(436, 564);
+            this._clearLogButton.Location = new System.Drawing.Point(625, 564);
             this._clearLogButton.Name = "_clearLogButton";
             this._clearLogButton.Size = new System.Drawing.Size(75, 23);
             this._clearLogButton.TabIndex = 17;
@@ -220,7 +220,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(534, 599);
+            this.ClientSize = new System.Drawing.Size(712, 594);
             this.Controls.Add(this._algDescriptionButton);
             this.Controls.Add(this._clearLogButton);
             this.Controls.Add(this._logListView);

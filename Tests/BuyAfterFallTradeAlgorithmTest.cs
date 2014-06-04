@@ -45,7 +45,7 @@ namespace Tests
             alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
 
-            Assert.IsTrue(ans > 99.99 & ans < 100.01 );
+            Assert.IsTrue(ans.Return > 99.99 & ans.Return < 100.01 );
         }
 
         [TestMethod]
@@ -84,7 +84,7 @@ namespace Tests
             alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
 
-            Assert.IsTrue(ans > 49.99 & ans < 50.01);
+            Assert.IsTrue(ans.Return > 49.99 & ans.Return < 50.01);
         }
 
         [TestMethod]
@@ -123,7 +123,7 @@ namespace Tests
             alg.SetArgs(stock, 90, 90, 0);
             var ans = alg.CalculateReturn();
 
-            Assert.IsTrue(ans == 0);
+            Assert.IsTrue(ans.Return == 0);
         }
 
         //[TestMethod]

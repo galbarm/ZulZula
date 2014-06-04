@@ -30,9 +30,10 @@ namespace ZulZula
             _logger.Debug("ZulZula has started");
 
             _userLog = new LogWriterListView(_logListView);
-            
+            TradeResult.Init();
+
             // init all stocks, from all time.
-            _stockFactory.Initialize(_container, Enum.GetValues(typeof(StockName)).Cast<StockName>(), DateTime.MinValue, DateTime.Now);
+            _stockFactory.Initialize(_container, Enum.GetValues(typeof(StockName)).Cast<StockName>(), new DateTime(1984,02,15), DateTime.Now);
             foreach (StockName stockName in Enum.GetValues(typeof(StockName)))
             {
                 var stock = _stockFactory.GetStock(stockName);
