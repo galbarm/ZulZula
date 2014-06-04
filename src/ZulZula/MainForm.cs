@@ -111,5 +111,11 @@ namespace ZulZula
             _container.RegisterInstance(typeof(IStockFactory), stockFactory);
             _stockFactory = stockFactory;
         }
+
+        private void OnAlgDescriptionButtonClick(object sender, EventArgs e)
+        {
+            var alg = (ITradeAlgorithm)_algorithmsComboBox.SelectedItem;
+            MessageBox.Show(alg.Description, alg + " Description");
+        }
     }
 }

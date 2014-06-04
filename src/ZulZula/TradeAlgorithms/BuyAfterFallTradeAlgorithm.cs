@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Reflection;
+using System.Resources;
+using System.Text;
+
 
 namespace ZulZula.TradeAlgorithms
 {
@@ -89,6 +93,19 @@ namespace ZulZula.TradeAlgorithms
         public double Arg2
         {
             get { return 0; }
+        }
+
+        public string Description
+        {
+            get
+            {
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("קנייה לאחר ירידה ומכירה לאחר עליה");
+                sb.AppendLine("arg0 = בכמה אחוזים המניה צריכה לרדת בסוף יום מסחר בודד, על מנת שהיא תירכש בשער הפתיחה של יום המסחר הבא");
+                sb.AppendLine("arg1 = בכמה אחוזים המניה צריכה לעלות בסוף יום מסחר בודד, על מנת שהיא תימכר בשער הפתיחה של יום המסחר הבא");
+                sb.AppendLine("arg2 = לא בשימוש");
+                return sb.ToString();
+            }
         }
 
         public ILogWriter LogWriter { set; private get; }

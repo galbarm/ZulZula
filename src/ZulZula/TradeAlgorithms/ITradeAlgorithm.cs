@@ -10,6 +10,7 @@
         double Arg1 { get; }
         double Arg2 { get; }
 
+        string Description { get; }
         ILogWriter LogWriter { set; }
     }
 }

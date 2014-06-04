@@ -46,6 +46,7 @@
             this._logListView = new System.Windows.Forms.ListView();
             this._logColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._clearLogButton = new System.Windows.Forms.Button();
+            this._algDescriptionButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // _stocksListBox
@@ -168,7 +169,7 @@
             // _goButton
             // 
             this._goButton.Enabled = false;
-            this._goButton.Location = new System.Drawing.Point(436, 186);
+            this._goButton.Location = new System.Drawing.Point(456, 175);
             this._goButton.Name = "_goButton";
             this._goButton.Size = new System.Drawing.Size(75, 23);
             this._goButton.TabIndex = 15;
@@ -182,10 +183,10 @@
             this._logColumn});
             this._logListView.FullRowSelect = true;
             this._logListView.GridLines = true;
-            this._logListView.Location = new System.Drawing.Point(12, 215);
+            this._logListView.Location = new System.Drawing.Point(12, 204);
             this._logListView.MultiSelect = false;
             this._logListView.Name = "_logListView";
-            this._logListView.Size = new System.Drawing.Size(499, 319);
+            this._logListView.Size = new System.Drawing.Size(519, 354);
             this._logListView.TabIndex = 16;
             this._logListView.UseCompatibleStateImageBehavior = false;
             this._logListView.View = System.Windows.Forms.View.Details;
@@ -197,7 +198,7 @@
             // 
             // _clearLogButton
             // 
-            this._clearLogButton.Location = new System.Drawing.Point(436, 540);
+            this._clearLogButton.Location = new System.Drawing.Point(436, 564);
             this._clearLogButton.Name = "_clearLogButton";
             this._clearLogButton.Size = new System.Drawing.Size(75, 23);
             this._clearLogButton.TabIndex = 17;
@@ -205,11 +206,22 @@
             this._clearLogButton.UseVisualStyleBackColor = true;
             this._clearLogButton.Click += new System.EventHandler(this.OnClearLogClick);
             // 
+            // _algDescriptionButton
+            // 
+            this._algDescriptionButton.Location = new System.Drawing.Point(503, 25);
+            this._algDescriptionButton.Name = "_algDescriptionButton";
+            this._algDescriptionButton.Size = new System.Drawing.Size(19, 21);
+            this._algDescriptionButton.TabIndex = 18;
+            this._algDescriptionButton.Text = "?";
+            this._algDescriptionButton.UseVisualStyleBackColor = true;
+            this._algDescriptionButton.Click += new System.EventHandler(this.OnAlgDescriptionButtonClick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(523, 566);
+            this.ClientSize = new System.Drawing.Size(534, 599);
+            this.Controls.Add(this._algDescriptionButton);
             this.Controls.Add(this._clearLogButton);
             this.Controls.Add(this._logListView);
             this.Controls.Add(this._goButton);
@@ -228,7 +240,7 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this._stocksListBox);
             this.Name = "MainForm";
-            this.Text = "Form1";
+            this.Text = "ZulZula";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -254,6 +266,7 @@
         private System.Windows.Forms.ListView _logListView;
         private System.Windows.Forms.ColumnHeader _logColumn;
         private System.Windows.Forms.Button _clearLogButton;
+        private System.Windows.Forms.Button _algDescriptionButton;
     }
 }
 
