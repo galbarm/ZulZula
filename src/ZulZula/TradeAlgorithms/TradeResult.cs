@@ -64,7 +64,7 @@ namespace ZulZula.TradeAlgorithms
         {
             return
                 string.Format(
-                    "TotalDays = {0}, DaysIn = {1}, StockReturn = {2}, Return {3}, StockXirr = {4}, Xirr = {5}, NumberOfSells = {6}",
+                    "TotalDays = {0}, DaysIn = {1}, StockReturn = {2}, Return {3}, StockXirr = {4}, Xirr = {5}, NumberOfTrades = {6}",
                     TotalDays, DaysIn, StockReturn.ToString("P"), Return.ToString("P"), StockXirr.ToString("P"),
                     Xirr.ToString("P"), NumberOfTrades);
         }
