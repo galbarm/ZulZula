@@ -29,13 +29,8 @@ namespace ZulZula
             _stockFactory = _container.Resolve<IStockFactory>();
         }
 
-        public Stock GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData)
+        private List<IStockEntry> GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData)
         {
-            //TODO:
-            //As for moment i start getting the data from year 2010. i ignore the params of startDate and endData
-            //I know it should be something like this:
-            //http://ichart.finance.yahoo.com/table.csv?s=MSFT&a=0&b=1&c=2000
-            //That url bring us data for stock microsoft from startDate year 1.1.2000
             var c = startDate.Year;
             var a = startDate.Month - 1;
             var b = startDate.Day;
@@ -75,48 +70,114 @@ namespace ZulZula
                     //_logger.DebugFormat("Successfuly created Historical Stock Entry={0}", hs.ShortDebugDescription()); //overloads the log file
                     entries.Add(hs);
                 }
-
                 entries.Reverse();
-
-                return new Stock(stockName, entries);
+                return entries;
             }
         }
 
-        public Stock GetStockFromLocal(string fullpath)
+        //Peudo code:
+        //1. If filename for this stock does not exist
+        //  1.1 Download it
+        //  1.2 Reverse it (or make sure it is sorted from start time -> end time (current))
+        //  1.3 Save the data as file
+        //2. else (if exist) 
+        //  2.1 Read the entire file, take the date from last line, and compare with todays' date, check if need to pull data
+        //  2.2 If no need to pull data, then do nothing
+        //  2.3 If need to pull data, get the data -> GetStockFromRemote
+        //  2.4 Add the data ti existing array -> make sure to add it to end of file
+        //  2.5 Save the updated data
+
+        public Stock GetStockFromLocal(StockName stockName, DateTime startDate, DateTime endData)
         {
+            var relativeResourceUrl = String.Format(@"..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo\\");
+            string relativeResourceCSV = String.Format(@"..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo\\{0}.stock", stockName);
+            string serializationFile = Path.Combine(relativeResourceUrl, String.Format("{0}.stock", stockName));
             var rates = new List<IStockEntry>();
-            var name = Path.GetFileNameWithoutExtension(fullpath);
-
-            var parser = new TextFieldParser(fullpath) {TextFieldType = FieldType.Delimited};
-            parser.SetDelimiters(",");
-            
-            //skips the first line
-            parser.ReadFields();
-
-            while (!parser.EndOfData)
+            if (!File.Exists(relativeResourceCSV))
             {
-                var fields = parser.ReadFields();
-                if (fields != null)
+                try
                 {
-                    try
+                    //Step 1.
+                    rates = GetStockFromRemote(stockName, startDate, endData);
+                    //serialize
+                    using (Stream stream = File.Open(serializationFile, FileMode.Create))
                     {
-                        //var date = DateTime.Parse(fields[0]);
-                        //var value = double.Parse(fields[4]);
-                        var stockEntry = new StockEntry(DateTime.Parse(fields[0]), double.Parse(fields[1]), double.Parse(fields[2]), double.Parse(fields[3]), double.Parse(fields[4]), double.Parse(fields[4]));
-                        rates.Add(stockEntry);
-                    }
-                    catch (Exception ex)
-                    {
-                        Console.WriteLine("Error has occurd while parsing single line in file={0}. continue to next line..Exception Message = {1}", name, ex.Message);
+                        var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                        bformatter.Serialize(stream, rates);
                     }
                 }
+                catch (Exception ex)
+                {
+                    _logger.ErrorFormat("Failed to get stock data to for stock={0}, StartDate={1}, EndDate={2}, Exception Message={3}", stockName, startDate, endData,ex.Message);
+                    throw;
+                }
             }
-
-            rates.Reverse();
-
-            var stock = new Stock(StockName.Yahoo, rates);
-            
+            else
+            {
+                try
+                {
+                    using (Stream stream = File.Open(relativeResourceCSV, FileMode.Open))
+                    {
+                        var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                        rates = (List<IStockEntry>)bformatter.Deserialize(stream);
+                    }
+                    if (endData > rates[rates.Count - 1].Date)
+                    {
+                        //Need to pull additional data
+                        var additionalRates = GetStockFromRemote(stockName, rates[rates.Count - 1].Date.AddDays(1), endData);
+                        rates.AddRange(additionalRates);
+                        using (Stream stream = File.Open(serializationFile, FileMode.OpenOrCreate))
+                        {
+                            var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                            bformatter.Serialize(stream, rates);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    _logger.ErrorFormat("Failed to get additional stock data to for stock={0}, StartDate={1}, EndDate={2}, Exception Message={3}", stockName, rates[rates.Count - 1].Date.AddDays(1), endData,ex.Message);
+                    //dont throw exception.. return what we have so far, lets work with it.
+                }
+            }
+            var stock = new Stock(stockName, rates);
             return stock;
         }
     }
 }
+
+
+
+//public Stock Original_GetStockFromLocal(string fullpath)
+//{
+//    var rates = new List<IStockEntry>();
+//    var name = Path.GetFileNameWithoutExtension(fullpath);
+
+//    var parser = new TextFieldParser(fullpath) {TextFieldType = FieldType.Delimited};
+//    parser.SetDelimiters(",");
+
+//    //skips the first line
+//    parser.ReadFields();
+
+//    while (!parser.EndOfData)
+//    {
+//        var fields = parser.ReadFields();
+//        if (fields != null)
+//        {
+//            try
+//            {
+//                var stockEntry = new StockEntry(DateTime.Parse(fields[0]), double.Parse(fields[1]), double.Parse(fields[2]), double.Parse(fields[3]), double.Parse(fields[4]), double.Parse(fields[4]));
+//                rates.Add(stockEntry);
+//            }
+//            catch (Exception ex)
+//            {
+//                Console.WriteLine("Error has occurd while parsing single line in file={0}. continue to next line..Exception Message = {1}", name, ex.Message);
+//            }
+//        }
+//    }
+
+//    rates.Reverse();
+
+//    var stock = new Stock(StockName.Yahoo, rates);
+
+//    return stock;
+//}

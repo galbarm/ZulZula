@@ -3,7 +3,7 @@ namespace ZulZula
 {
     public interface IDataProvider
     {
-        Stock GetStockFromLocal(string fullFilePath);
-        Stock GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData);
+        Stock GetStockFromLocal(StockName stockName, DateTime startDate, DateTime endData);
+        //Stock GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData);
     }
 }

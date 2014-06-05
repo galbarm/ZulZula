@@ -40,7 +40,7 @@ namespace Tests
 
 
             //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod1", rates);//OLD
-            var stock = new Stock(StockName.Amazon, rates);
+            var stock = new Stock(StockName.Google, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
             alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
@@ -79,7 +79,7 @@ namespace Tests
 
 
             //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
-            var stock = new Stock(StockName.Amazon, rates);
+            var stock = new Stock(StockName.Google, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
             alg.SetArgs(stock, 40, 40, 0);
             var ans = alg.CalculateReturn();
@@ -118,7 +118,7 @@ namespace Tests
 
 
             //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
-            var stock = new Stock(StockName.Amazon, rates);
+            var stock = new Stock(StockName.Google, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
             alg.SetArgs(stock, 90, 90, 0);
             var ans = alg.CalculateReturn();

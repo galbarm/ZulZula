@@ -33,11 +33,20 @@ namespace ZulZula
             TradeResult.Init();
 
             // init all stocks, from all time.
+            _logger.DebugFormat("Starting to initialize stock factory");
             _stockFactory.Initialize(_container, Enum.GetValues(typeof(StockName)).Cast<StockName>(), new DateTime(1984,02,15), DateTime.Now);
+            _logger.DebugFormat("Finished to initialize stock factory");
             foreach (StockName stockName in Enum.GetValues(typeof(StockName)))
             {
-                var stock = _stockFactory.GetStock(stockName);
-                _stocksListBox.Items.Add(stock);
+                try
+                {
+                    var stock = _stockFactory.GetStock(stockName);
+                    _stocksListBox.Items.Add(stock);
+                }
+                catch (Exception ex)
+                { 
+                    //silent...
+                }
             }
             
 

@@ -2,6 +2,7 @@
 
 namespace ZulZula
 {
+    [Serializable]
     public class StockEntry : IStockEntry
     {
         public StockEntry()

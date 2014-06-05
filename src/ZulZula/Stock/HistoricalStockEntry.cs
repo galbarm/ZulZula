@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace ZulZula
 {
+    [Serializable]
     class HistoricalStockEntry : StockEntry
     {
         public HistoricalStockEntry() { }

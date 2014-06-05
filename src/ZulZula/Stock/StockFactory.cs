@@ -22,8 +22,7 @@ namespace ZulZula
 
     internal class StockFactory : IStockFactory//should inherit IStockFactory later on
     {
-        private IDictionary<StockName/*symbolName*/, Stock> _stockHolder = new Dictionary<StockName, Stock>();
-        
+        private Dictionary<StockName/*symbolName*/, Stock> _stockHolder = new Dictionary<StockName, Stock>();
         private IUnityContainer _container;
         private ILogger _logger;
         private IDictionary<StockName, string> _stockNameToSymbolMap = new Dictionary<StockName, string>();
@@ -31,7 +30,7 @@ namespace ZulZula
         //We currently receive data from yahoo, so there is only 1 stock reader available. if later on we will need additional data, or yahoo will be down.. implement additional
         private IDictionary<DataProvider, IDataProvider> _dataProviders = new Dictionary<DataProvider, IDataProvider>();
         private DataProvider _defaultDataProvider = DataProvider.Yahoo;
-
+        
         public void Initialize(IUnityContainer container, IEnumerable<StockName> stocks, DateTime startDate, DateTime endDate)
         {
             _container = container;
@@ -45,15 +44,25 @@ namespace ZulZula
                 if (!_stockHolder.ContainsKey(singleStock))
                 {
                     //Does not exist.. lets do it
-                    var stockData = _dataProviders[_defaultDataProvider].GetStockFromRemote(singleStock, startDate, endDate);
-                    _stockHolder[singleStock] = stockData;
+                    try
+                    {
+                        var stockData = _dataProviders[_defaultDataProvider].GetStockFromLocal(singleStock, startDate, endDate);
+                        _stockHolder[singleStock] = stockData;
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.ErrorFormat("Stock Factory did not add data for stock={0}, continue to next stock..", singleStock);
+                    }
                 }
             }
         }
 
         public Stock GetStock(StockName name)
         {
-            return _stockHolder[name];
+            if (_stockHolder.ContainsKey(name))
+                return _stockHolder[name];
+            else
+                throw new Exception(String.Format("Stock {0} does not exist", name));
         }
 
         public string ConvertNameToSymbol(StockName name)
