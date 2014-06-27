@@ -46,7 +46,7 @@ namespace ZulZula
                     //Does not exist.. lets do it
                     try
                     {
-                        var stockData = _dataProviders[_defaultDataProvider].GetStockFromLocal(singleStock, startDate, endDate);
+                        var stockData = _dataProviders[_defaultDataProvider].GetStock(singleStock, startDate, endDate);
                         _stockHolder[singleStock] = stockData;
                     }
                     catch (Exception ex)

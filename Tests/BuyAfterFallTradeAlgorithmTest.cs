@@ -12,7 +12,7 @@ namespace Tests
         [TestMethod]
         public void TestMethod1()
         {
-            var rates = new List<StockEntry>();
+            var rates = new List<IStockEntry>();
             var date = new DateTime(2010, 01, 01);
             var open = 3;
             var high = 5;
@@ -42,7 +42,7 @@ namespace Tests
             //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod1", rates);//OLD
             var stock = new Stock(StockName.Google, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
-            alg.SetArgs(stock, 40, 40, 0);
+            alg.Init(stock, DateTime.MinValue, DateTime.MaxValue, 40, 40, 0, new EmptyLogWriter());
             var ans = alg.CalculateReturn();
 
             Assert.IsTrue(ans.Return > 99.99 & ans.Return < 100.01 );
@@ -51,7 +51,7 @@ namespace Tests
         [TestMethod]
         public void TestMethod2()
         {
-            var rates = new List<StockEntry>();
+            var rates = new List<IStockEntry>();
             var date = new DateTime(2010, 01, 01);
             var open = 3;
             var high = 5;
@@ -81,7 +81,7 @@ namespace Tests
             //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
             var stock = new Stock(StockName.Google, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
-            alg.SetArgs(stock, 40, 40, 0);
+            alg.Init(stock, DateTime.MinValue, DateTime.MaxValue, 40, 40, 0, new EmptyLogWriter());
             var ans = alg.CalculateReturn();
 
             Assert.IsTrue(ans.Return > 49.99 & ans.Return < 50.01);
@@ -90,7 +90,7 @@ namespace Tests
         [TestMethod]
         public void TestMethod3()
         {
-            var rates = new List<StockEntry>();
+            var rates = new List<IStockEntry>();
             var date = new DateTime(2010, 01, 01);
             var open = 3;
             var high = 5;
@@ -120,7 +120,7 @@ namespace Tests
             //var stock = new Stock("BuyAfterFallTradeAlgorithmTest.TestMethod2", rates);
             var stock = new Stock(StockName.Google, rates);
             var alg = new BuyAfterFallTradeAlgorithm();
-            alg.SetArgs(stock, 90, 90, 0);
+            alg.Init(stock, DateTime.MinValue, DateTime.MaxValue, 90, 90, 0, new EmptyLogWriter());
             var ans = alg.CalculateReturn();
 
             Assert.IsTrue(ans.Return == 0);

@@ -87,7 +87,7 @@ namespace ZulZula
         //  2.4 Add the data ti existing array -> make sure to add it to end of file
         //  2.5 Save the updated data
 
-        public Stock GetStockFromLocal(StockName stockName, DateTime startDate, DateTime endData)
+        public Stock GetStock(StockName stockName, DateTime startDate, DateTime endData)
         {
             var relativeResourceUrl = String.Format(@"..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo\\");
             string relativeResourceCSV = String.Format(@"..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo\\{0}.stock", stockName);
@@ -144,40 +144,3 @@ namespace ZulZula
         }
     }
 }
-
-
-
-//public Stock Original_GetStockFromLocal(string fullpath)
-//{
-//    var rates = new List<IStockEntry>();
-//    var name = Path.GetFileNameWithoutExtension(fullpath);
-
-//    var parser = new TextFieldParser(fullpath) {TextFieldType = FieldType.Delimited};
-//    parser.SetDelimiters(",");
-
-//    //skips the first line
-//    parser.ReadFields();
-
-//    while (!parser.EndOfData)
-//    {
-//        var fields = parser.ReadFields();
-//        if (fields != null)
-//        {
-//            try
-//            {
-//                var stockEntry = new StockEntry(DateTime.Parse(fields[0]), double.Parse(fields[1]), double.Parse(fields[2]), double.Parse(fields[3]), double.Parse(fields[4]), double.Parse(fields[4]));
-//                rates.Add(stockEntry);
-//            }
-//            catch (Exception ex)
-//            {
-//                Console.WriteLine("Error has occurd while parsing single line in file={0}. continue to next line..Exception Message = {1}", name, ex.Message);
-//            }
-//        }
-//    }
-
-//    rates.Reverse();
-
-//    var stock = new Stock(StockName.Yahoo, rates);
-
-//    return stock;
-//}

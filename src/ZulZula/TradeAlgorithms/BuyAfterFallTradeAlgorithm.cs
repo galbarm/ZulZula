@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Reflection;
-using System.Resources;
-using System.Runtime.InteropServices.ComTypes;
 using System.Text;
 
 
@@ -11,91 +8,105 @@ namespace ZulZula.TradeAlgorithms
     public class BuyAfterFallTradeAlgorithm : ITradeAlgorithm
     {
         private Stock _stock;
+        private DateTime _fromDate;
+        private DateTime _toDate;
+
         private double _fallThreshold = 10;
         private double _raiseThreshold = 5;
+        private ILogWriter _logWriter;
 
-        public void SetArgs(Stock stock, double arg0, double arg1, double arg2)
+        public void Init(Stock stock, DateTime fromDate, DateTime toDate, double arg0, double arg1, double arg2, ILogWriter logWriter)
         {
             _stock = stock;
+            _fromDate = fromDate;
+            _toDate = toDate;
             _fallThreshold = arg0;
             _raiseThreshold = arg1;
+            _logWriter = logWriter;
         }
 
         public TradeResult CalculateReturn()
         {
             var result = new TradeResult();
-            double cash = 1000000;
+            double cash = 1;
             double shares = 0;
-            StockEntry yesterday = null;
+            DateTime buyDate = DateTime.MinValue;
 
-            foreach (StockEntry today in _stock.Rates)
+            int start = _stock.DateToIndex(_fromDate, true);
+            int end = _stock.DateToIndex(_toDate, false);
+
+            _logWriter.Write(string.Format("Start Price = {0} on {1}", _stock.Rates[start].Open,
+                _stock.Rates[start].Date.ToString("d")));
+
+            for (var i = start+1; i < end-1; i++)
             {
-                try
+                var yesterday = _stock.Rates[i - 1];
+                var today = _stock.Rates[i];
+                var tomorrow = _stock.Rates[i + 1];
+
+                //buy
+                if (shares == 0 & (((yesterday.Close - today.Close)/yesterday.Close)*100 >= _fallThreshold))
                 {
-                    //init
-                    if (yesterday == null)
-                    {
-                        LogWriter.Write(string.Format("Start Price = {0} at {1}", today.Close, today.Date.ToString("d")));
-                        continue;
-                    }
+                    shares = cash/tomorrow.Open;
+                    result.NumberOfTrades++;
 
-                    //buy
-                    if (shares == 0 & (((yesterday.Close - today.Close)/yesterday.Close)*100 >= _fallThreshold))
-                    {
-                        shares = cash/today.Close;
-                        result.NumberOfTrades++;
-                        if (LogWriter != null)
-                        {
-                            LogWriter.Write(string.Format("Buying on {0}, at price {1}, because priced dropped by {2}", today.Date.ToString("d"),
-                                today.Close, ((yesterday.Close - today.Close)/yesterday.Close).ToString("P")));
-                        }
+                    buyDate = tomorrow.Date;
 
-                        continue;
-                    }
+                    _logWriter.Write(
+                        string.Format("Buying on {0}, at price {1}, because priced dropped by {2} [({3}) -> ({4})]",
+                            tomorrow.Date.ToString("d"),
+                            tomorrow.Open,
+                            ((yesterday.Close - today.Close)/yesterday.Close).ToString("P"),
+                            yesterday.Close,
+                            today.Close));
 
-                    //sell
-                    if (shares > 0 & (((today.Close - yesterday.Close)/yesterday.Close)*100 >= _raiseThreshold))
-                    {
-                        cash = shares*today.Close;
-                        result.NumberOfTrades++;
-                        if (LogWriter != null)
-                        {
-                            LogWriter.Write(string.Format("Selling on {0}, at price {1}, because priced increased by {2}", today.Date.ToString("d"),
-                                today.Close, ((today.Close - yesterday.Close)/yesterday.Close).ToString("P")));
-                        }
-
-                        shares = 0;
-                    }
+                    continue;
                 }
-                finally
-                {
-                    if (yesterday != null & shares > 0)
-                    {
-                        result.DaysIn += (int) (today.Date - yesterday.Date).TotalDays;
-                    }
 
-                    yesterday = today;
+                //sell
+                if (shares > 0 & (((today.Close - yesterday.Close)/yesterday.Close)*100 >= _raiseThreshold))
+                {
+                    var cashBefore = cash;
+                    cash = shares*tomorrow.Open;
+                    result.NumberOfTrades++;
+
+                    result.DaysIn += (int) (tomorrow.Date - buyDate).TotalDays;
+
+                    _logWriter.Write(
+                        string.Format(
+                            "Selling on {0}, at price {1} (that's {2}), because priced increased by {3} [({4}) -> ({5})]",
+                            tomorrow.Date.ToString("d"),
+                            tomorrow.Open,
+                            ((cash - cashBefore)/cashBefore).ToString("P"),
+                            ((today.Close - yesterday.Close)/yesterday.Close).ToString("P"),
+                            yesterday.Close,
+                            today.Close));
+
+                    shares = 0;
                 }
             }
+
 
             //sell if reached the end while holding stocks
             if (shares > 0)
             {
-                cash = shares*_stock.Rates.Last().Close;
+                var cashBefore = cash;
+                cash = shares*_stock.Rates[end].Open;
                 result.NumberOfTrades++;
-                if (LogWriter != null)
-                {
-                    LogWriter.Write(string.Format("Selling on {0}, at price {1}, because reached last day",
-                        _stock.Rates.Last().Date.ToString("d"), _stock.Rates.Last().Close));
-                }
+                result.DaysIn += (int) (_stock.Rates[end].Date - buyDate).TotalDays;
+
+                _logWriter.Write(string.Format("Selling on {0}, at price {1} (that's {2}), because reached last day",
+                    _stock.Rates[end].Date.ToString("d"), _stock.Rates[end].Open,
+                    ((cash - cashBefore)/cashBefore).ToString("P")));
             }
 
 
-            LogWriter.Write(string.Format("End Price = {0} at {1}", _stock.Rates.Last().Close, _stock.Rates.Last().Date.ToString("d")));
+            _logWriter.Write(string.Format("End Price = {0} on {1}", _stock.Rates[end].Close,
+                _stock.Rates[end].Date.ToString("d")));
 
-            result.Return = ((cash - 1000000)/1000000);
-            result.TotalDays = (int) (_stock.Rates.Last().Date - _stock.Rates.First().Date).TotalDays;
-            result.StockReturn = ((_stock.Rates.Last().Close - _stock.Rates.First().Close)/_stock.Rates.First().Close);
+            result.Return = (cash - 1);
+            result.TotalDays = (int)(_stock.Rates[end].Date - _stock.Rates[start].Date).TotalDays;
+            result.StockReturn = ((_stock.Rates[end].Close - _stock.Rates[start].Close) / _stock.Rates[start].Close);
 
             return result;
         }
@@ -132,7 +143,5 @@ namespace ZulZula.TradeAlgorithms
                 return sb.ToString();
             }
         }
-
-        public ILogWriter LogWriter { set; private get; }
     }
 }

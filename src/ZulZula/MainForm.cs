@@ -89,11 +89,16 @@ namespace ZulZula
 
         private void OnGoClick(object sender, EventArgs e)
         {
-            var stock = (Stock)_stocksListBox.SelectedItem;
-            var alg = (ITradeAlgorithm)_algorithmsComboBox.SelectedItem;
-            alg.SetArgs(stock, double.Parse(_arg0TextBox.Text), double.Parse(_arg1TextBox.Text),
-                double.Parse(_arg2TextBox.Text));
-            alg.LogWriter = _userLog;
+            if (_autoClearLogCheckbox.Checked)
+            {
+                _logListView.Items.Clear();
+            }
+
+            var stock = (Stock) _stocksListBox.SelectedItem;
+            var alg = (ITradeAlgorithm) _algorithmsComboBox.SelectedItem;
+            alg.Init(stock, _fromDateTimePicker.Value, _toDateTimePicker.Value, double.Parse(_arg0TextBox.Text),
+                double.Parse(_arg1TextBox.Text),
+                double.Parse(_arg2TextBox.Text), _userLog);
             var ans = alg.CalculateReturn();
 
             _userLog.Write(ans.ToString());

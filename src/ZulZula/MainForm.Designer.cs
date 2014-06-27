@@ -47,6 +47,7 @@
             this._logColumn = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this._clearLogButton = new System.Windows.Forms.Button();
             this._algDescriptionButton = new System.Windows.Forms.Button();
+            this._autoClearLogCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // _stocksListBox
@@ -198,7 +199,7 @@
             // 
             // _clearLogButton
             // 
-            this._clearLogButton.Location = new System.Drawing.Point(625, 564);
+            this._clearLogButton.Location = new System.Drawing.Point(546, 566);
             this._clearLogButton.Name = "_clearLogButton";
             this._clearLogButton.Size = new System.Drawing.Size(75, 23);
             this._clearLogButton.TabIndex = 17;
@@ -216,11 +217,24 @@
             this._algDescriptionButton.UseVisualStyleBackColor = true;
             this._algDescriptionButton.Click += new System.EventHandler(this.OnAlgDescriptionButtonClick);
             // 
+            // _autoClearLogCheckbox
+            // 
+            this._autoClearLogCheckbox.AutoSize = true;
+            this._autoClearLogCheckbox.Checked = true;
+            this._autoClearLogCheckbox.CheckState = System.Windows.Forms.CheckState.Checked;
+            this._autoClearLogCheckbox.Location = new System.Drawing.Point(627, 570);
+            this._autoClearLogCheckbox.Name = "_autoClearLogCheckbox";
+            this._autoClearLogCheckbox.Size = new System.Drawing.Size(73, 17);
+            this._autoClearLogCheckbox.TabIndex = 19;
+            this._autoClearLogCheckbox.Text = "auto clear";
+            this._autoClearLogCheckbox.UseVisualStyleBackColor = true;
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(712, 594);
+            this.Controls.Add(this._autoClearLogCheckbox);
             this.Controls.Add(this._algDescriptionButton);
             this.Controls.Add(this._clearLogButton);
             this.Controls.Add(this._logListView);
@@ -267,6 +281,7 @@
         private System.Windows.Forms.ColumnHeader _logColumn;
         private System.Windows.Forms.Button _clearLogButton;
         private System.Windows.Forms.Button _algDescriptionButton;
+        private System.Windows.Forms.CheckBox _autoClearLogCheckbox;
     }
 }
 

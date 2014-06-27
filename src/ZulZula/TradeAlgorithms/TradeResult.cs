@@ -14,15 +14,41 @@ namespace ZulZula.TradeAlgorithms
             _excelApp = new Application();
         }
 
+        public int TotalDays { get; set; }
+        public int DaysIn { get; set; }
+        public double Return { get; set; }
+        public double StockReturn { get; set; }
+        public int NumberOfTrades { get; set; }
+        
+        public double Xirr
+        {
+            get { return CalculateSimpleXirr(Return, DaysIn); }
+        }
+
+        public double StockXirr
+        {
+            get { return CalculateSimpleXirr(StockReturn, TotalDays); }
+        }
+
+        public override string ToString()
+        {
+            return
+                string.Format(
+                    "TotalDays = {0}, DaysIn = {1}, StockReturn = {2}, Return {3}, StockXirr = {4}, Xirr = {5}, NumberOfTrades = {6}",
+                    TotalDays, DaysIn, StockReturn.ToString("P"), Return.ToString("P"), StockXirr.ToString("P"),
+                    Xirr.ToString("P"), NumberOfTrades);
+        }
+
+
         private double CalculateSimpleXirr(double returnValue, int daysIn)
         {
             const double startValue = 1000000;
-            double endValue = startValue + startValue*returnValue;
+            double endValue = startValue + startValue * returnValue;
 
             DateTime startTime = DateTime.UtcNow;
             DateTime endTime = startTime + TimeSpan.FromDays(daysIn);
 
-            double ans = InternalXirr(new[] {startValue, -1*endValue}, new[] {startTime, endTime});
+            double ans = InternalXirr(new[] { startValue, -1 * endValue }, new[] { startTime, endTime });
 
             return ans;
         }
@@ -40,33 +66,6 @@ namespace ZulZula.TradeAlgorithms
             var datesArray = datesAsDoubles.ToArray();
 
             return _excelApp.WorksheetFunction.Xirr(valuesArray, datesArray);
-        }
-
-        public int TotalDays { get; set; }
-        public int DaysIn { get; set; }
-        public double Return { get; set; }
-
-        public double Xirr
-        {
-            get { return CalculateSimpleXirr(Return, DaysIn); }
-        }
-
-        public double StockReturn { get; set; }
-
-        public double StockXirr
-        {
-            get { return CalculateSimpleXirr(StockReturn, TotalDays); }
-        }
-
-        public int NumberOfTrades { get; set; }
-
-        public override string ToString()
-        {
-            return
-                string.Format(
-                    "TotalDays = {0}, DaysIn = {1}, StockReturn = {2}, Return {3}, StockXirr = {4}, Xirr = {5}, NumberOfTrades = {6}",
-                    TotalDays, DaysIn, StockReturn.ToString("P"), Return.ToString("P"), StockXirr.ToString("P"),
-                    Xirr.ToString("P"), NumberOfTrades);
         }
     }
 }

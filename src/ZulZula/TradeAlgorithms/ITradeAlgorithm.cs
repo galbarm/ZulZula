@@ -1,15 +1,16 @@
-﻿namespace ZulZula.TradeAlgorithms
+﻿using System;
+
+namespace ZulZula.TradeAlgorithms
 {
     public interface ITradeAlgorithm
     {
-        void SetArgs(Stock stock, double arg0, double arg1, double arg2);
+        void Init(Stock stock, DateTime fromDate, DateTime toDate, double arg0, double arg1, double arg2, ILogWriter logWriter);
         TradeResult CalculateReturn();
+
+        string Description { get; }
 
         double Arg0 { get; }
         double Arg1 { get; }
         double Arg2 { get; }
-
-        string Description { get; }
-        ILogWriter LogWriter { set; }
     }
 }
