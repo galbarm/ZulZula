@@ -1,4 +1,4 @@
-﻿namespace ZulZula
+﻿namespace ZulZula.Log
 {
     public interface ILogWriter
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZulZula
+namespace ZulZula.Stock
 {
     [Serializable]
     public class StockEntry : IStockEntry

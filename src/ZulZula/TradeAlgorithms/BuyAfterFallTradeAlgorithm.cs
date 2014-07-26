@@ -1,13 +1,13 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
+using ZulZula.Log;
 
 
 namespace ZulZula.TradeAlgorithms
 {
     public class BuyAfterFallTradeAlgorithm : ITradeAlgorithm
     {
-        private Stock _stock;
+        private Stock.Stock _stock;
         private DateTime _fromDate;
         private DateTime _toDate;
 
@@ -15,7 +15,7 @@ namespace ZulZula.TradeAlgorithms
         private double _raiseThreshold = 5;
         private ILogWriter _logWriter;
 
-        public void Init(Stock stock, DateTime fromDate, DateTime toDate, double arg0, double arg1, double arg2, ILogWriter logWriter)
+        public void Init(Stock.Stock stock, DateTime fromDate, DateTime toDate, double arg0, double arg1, double arg2, ILogWriter logWriter)
         {
             _stock = stock;
             _fromDate = fromDate;
@@ -45,6 +45,7 @@ namespace ZulZula.TradeAlgorithms
                 var tomorrow = _stock.Rates[i + 1];
 
                 //buy
+                // ReSharper disable once CompareOfFloatsByEqualityOperator
                 if (shares == 0 & (((yesterday.Close - today.Close)/yesterday.Close)*100 >= _fallThreshold))
                 {
                     shares = cash/tomorrow.Open;
@@ -135,7 +136,7 @@ namespace ZulZula.TradeAlgorithms
         {
             get
             {
-                StringBuilder sb = new StringBuilder();
+                var sb = new StringBuilder();
                 sb.AppendLine("קנייה לאחר ירידה ומכירה לאחר עליה");
                 sb.AppendLine("arg0 = בכמה אחוזים המניה צריכה לרדת בסוף יום מסחר בודד, על מנת שהיא תירכש בשער הפתיחה של יום המסחר הבא");
                 sb.AppendLine("arg1 = בכמה אחוזים המניה צריכה לעלות בסוף יום מסחר בודד, על מנת שהיא תימכר בשער הפתיחה של יום המסחר הבא");

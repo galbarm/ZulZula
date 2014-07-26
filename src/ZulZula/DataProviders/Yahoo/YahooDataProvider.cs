@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using Microsoft.VisualBasic.FileIO;
 using System.Net;
 using Microsoft.Practices.Unity;
+using ZulZula.Log;
+using ZulZula.Stock;
 
-namespace ZulZula
+namespace ZulZula.DataProviders.Yahoo
 {
     /**
      * get data from Yahoo finance API site.
@@ -19,14 +19,13 @@ namespace ZulZula
      **/
     public class YahooDataProvider : IDataProvider
     {
-        private IUnityContainer _container;
-        private IStockFactory _stockFactory;
-        private ILogger _logger;
+        private readonly IStockFactory _stockFactory;
+        private readonly ILogger _logger;
+        
         public YahooDataProvider(IUnityContainer container)
         {
-            _container = container;
-            _logger = _container.Resolve<ILogger>();
-            _stockFactory = _container.Resolve<IStockFactory>();
+            _logger = container.Resolve<ILogger>();
+            _stockFactory = container.Resolve<IStockFactory>();
         }
 
         private List<IStockEntry> GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData)
@@ -40,9 +39,9 @@ namespace ZulZula
             var e = endData.Day;
             var entries = new List<IStockEntry>();
  
-            using (WebClient web = new WebClient())
+            using (var web = new WebClient())
             {
-                _logger.DebugFormat("{0} is about to get data from remote URL", this.GetType().Name);
+                _logger.DebugFormat("{0} is about to get data from remote URL", GetType().Name);
                 //string data = web.DownloadString(string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&c={1}", _stockFactory.ConvertNameToSymbol(stockName), 2014));
                 string downloadString = string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&a={1}&b={2}&c={3}&d={4}&e={5}&f={6}",
                     _stockFactory.ConvertNameToSymbol(stockName), a, b, c, d, e, f);
@@ -59,14 +58,16 @@ namespace ZulZula
  
                     string[] cols = rows[i].Split(',');
 
-                    HistoricalStockEntry hs = new HistoricalStockEntry();
-                    hs.Date = Convert.ToDateTime(cols[0]);
-                    hs.Open = Convert.ToDouble(cols[1]);
-                    hs.High = Convert.ToDouble(cols[2]);
-                    hs.Low = Convert.ToDouble(cols[3]);
-                    hs.Close = Convert.ToDouble(cols[4]);
-                    hs.Volume = Convert.ToDouble(cols[5]);
-                    hs.AdjClose = Convert.ToDouble(cols[6]);
+                    var hs = new HistoricalStockEntry
+                    {
+                        Date = Convert.ToDateTime(cols[0]),
+                        Open = Convert.ToDouble(cols[1]),
+                        High = Convert.ToDouble(cols[2]),
+                        Low = Convert.ToDouble(cols[3]),
+                        Close = Convert.ToDouble(cols[4]),
+                        Volume = Convert.ToDouble(cols[5]),
+                        AdjClose = Convert.ToDouble(cols[6])
+                    };
                     //_logger.DebugFormat("Successfuly created Historical Stock Entry={0}", hs.ShortDebugDescription()); //overloads the log file
                     entries.Add(hs);
                 }
@@ -87,20 +88,22 @@ namespace ZulZula
         //  2.4 Add the data ti existing array -> make sure to add it to end of file
         //  2.5 Save the updated data
 
-        public Stock GetStock(StockName stockName, DateTime startDate, DateTime endData)
+        public Stock.Stock GetStock(StockName stockName, DateTime startDate, DateTime endDate)
         {
-            var relativeResourceUrl = String.Format(@"..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo\\");
-            string relativeResourceCSV = String.Format(@"..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo\\{0}.stock", stockName);
-            string serializationFile = Path.Combine(relativeResourceUrl, String.Format("{0}.stock", stockName));
-            var rates = new List<IStockEntry>();
-            if (!File.Exists(relativeResourceCSV))
+            string dir = String.Format(@"..\..\StockData\Yahoo");
+            string filename = String.Format("{0}.stock", stockName);
+            var fullPath = Path.Combine(dir, filename);
+
+            List<IStockEntry> rates;
+            if (!File.Exists(fullPath))
             {
                 try
                 {
                     //Step 1.
-                    rates = GetStockFromRemote(stockName, startDate, endData);
+                    rates = GetStockFromRemote(stockName, startDate, endDate);
                     //serialize
-                    using (Stream stream = File.Open(serializationFile, FileMode.Create))
+                    Directory.CreateDirectory(dir);
+                    using (Stream stream = File.Open(fullPath, FileMode.Create))
                     {
                         var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
                         bformatter.Serialize(stream, rates);
@@ -108,38 +111,21 @@ namespace ZulZula
                 }
                 catch (Exception ex)
                 {
-                    _logger.ErrorFormat("Failed to get stock data to for stock={0}, StartDate={1}, EndDate={2}, Exception Message={3}", stockName, startDate, endData,ex.Message);
+                    _logger.ErrorFormat(
+                        "Failed to get stock data to for stock={0}, StartDate={1}, EndDate={2}, Exception Message={3}",
+                        stockName, startDate, endDate, ex.Message);
                     throw;
                 }
             }
             else
             {
-                try
+                using (Stream stream = File.Open(fullPath, FileMode.Open))
                 {
-                    using (Stream stream = File.Open(relativeResourceCSV, FileMode.Open))
-                    {
-                        var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                        rates = (List<IStockEntry>)bformatter.Deserialize(stream);
-                    }
-                    if (endData > rates[rates.Count - 1].Date)
-                    {
-                        //Need to pull additional data
-                        var additionalRates = GetStockFromRemote(stockName, rates[rates.Count - 1].Date.AddDays(1), endData);
-                        rates.AddRange(additionalRates);
-                        using (Stream stream = File.Open(serializationFile, FileMode.OpenOrCreate))
-                        {
-                            var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                            bformatter.Serialize(stream, rates);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    _logger.ErrorFormat("Failed to get additional stock data to for stock={0}, StartDate={1}, EndDate={2}, Exception Message={3}", stockName, rates[rates.Count - 1].Date.AddDays(1), endData,ex.Message);
-                    //dont throw exception.. return what we have so far, lets work with it.
+                    var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                    rates = (List<IStockEntry>) bformatter.Deserialize(stream);
                 }
             }
-            var stock = new Stock(stockName, rates);
+            var stock = new Stock.Stock(stockName, rates);
             return stock;
         }
     }

@@ -1,6 +1,6 @@
 ﻿using System.Windows.Forms;
 
-namespace ZulZula
+namespace ZulZula.Log
 {
     public class LogWriterListView : ILogWriter
     {

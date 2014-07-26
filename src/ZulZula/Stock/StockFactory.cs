@@ -1,8 +1,10 @@
-﻿using Microsoft.Practices.Unity;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Microsoft.Practices.Unity;
+using ZulZula.DataProviders.Yahoo;
+using ZulZula.Log;
 
-namespace ZulZula
+namespace ZulZula.Stock
 {
     public enum StockName
     {
@@ -20,17 +22,17 @@ namespace ZulZula
         Yahoo
     }
 
-    internal class StockFactory : IStockFactory//should inherit IStockFactory later on
+    internal class StockFactory : IStockFactory
     {
-        private Dictionary<StockName/*symbolName*/, Stock> _stockHolder = new Dictionary<StockName, Stock>();
+        private readonly Dictionary<StockName, Stock> _stockHolder = new Dictionary<StockName, Stock>();
         private IUnityContainer _container;
         private ILogger _logger;
-        private IDictionary<StockName, string> _stockNameToSymbolMap = new Dictionary<StockName, string>();
+        private readonly IDictionary<StockName, string> _stockNameToSymbolMap = new Dictionary<StockName, string>();
 
         //We currently receive data from yahoo, so there is only 1 stock reader available. if later on we will need additional data, or yahoo will be down.. implement additional
-        private IDictionary<DataProvider, IDataProvider> _dataProviders = new Dictionary<DataProvider, IDataProvider>();
-        private DataProvider _defaultDataProvider = DataProvider.Yahoo;
-        
+        private readonly IDictionary<DataProvider, IDataProvider> _dataProviders = new Dictionary<DataProvider, IDataProvider>();
+        private const DataProvider DefaultDataProvider = DataProvider.Yahoo;
+
         public void Initialize(IUnityContainer container, IEnumerable<StockName> stocks, DateTime startDate, DateTime endDate)
         {
             _container = container;
@@ -38,6 +40,7 @@ namespace ZulZula
 
             MapStockReaders();
             FillStockNameToSymbol();
+
             //Make sure stock data exist for each of the input stocks..
             foreach (StockName singleStock in stocks)
             {
@@ -46,12 +49,12 @@ namespace ZulZula
                     //Does not exist.. lets do it
                     try
                     {
-                        var stockData = _dataProviders[_defaultDataProvider].GetStock(singleStock, startDate, endDate);
+                        var stockData = _dataProviders[DefaultDataProvider].GetStock(singleStock, startDate, endDate);
                         _stockHolder[singleStock] = stockData;
                     }
                     catch (Exception ex)
                     {
-                        _logger.ErrorFormat("Stock Factory did not add data for stock={0}, continue to next stock..", singleStock);
+                        _logger.Error(string.Format("Stock Factory did not add data for stock={0}, continue to next stock..", singleStock), ex);
                     }
                 }
             }
@@ -60,9 +63,11 @@ namespace ZulZula
         public Stock GetStock(StockName name)
         {
             if (_stockHolder.ContainsKey(name))
+            {
                 return _stockHolder[name];
-            else
-                throw new Exception(String.Format("Stock {0} does not exist", name));
+            }
+
+            throw new Exception(String.Format("Stock {0} does not exist", name));
         }
 
         public string ConvertNameToSymbol(StockName name)
@@ -70,10 +75,6 @@ namespace ZulZula
             return _stockNameToSymbolMap[name];
         }
 
-        /**
-         * This method should be filled with all the stocks we support
-         * We have to find a way to fill it automatically
-         **/
         private void FillStockNameToSymbol() 
         {
             _stockNameToSymbolMap[StockName.Yahoo] = "YHOO";

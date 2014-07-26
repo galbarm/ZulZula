@@ -1,17 +1,14 @@
-﻿using Microsoft.Practices.Unity;
+﻿using System.Globalization;
+using System.Threading;
+using Microsoft.Practices.Unity;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Resources;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using ZulZula.Log;
+using ZulZula.Stock;
 using ZulZula.TradeAlgorithms;
 
 namespace ZulZula
@@ -19,9 +16,10 @@ namespace ZulZula
     public partial class MainForm : Form
     {
         private ILogger _logger;
-        private ILogWriter _userLog;
-        private IUnityContainer _container = new UnityContainer();
+        private readonly ILogWriter _userLog;
+        private readonly IUnityContainer _container = new UnityContainer();
         private IStockFactory _stockFactory;
+
         public MainForm()
         {
             InitializeComponent();
@@ -30,13 +28,15 @@ namespace ZulZula
             _logger.Debug("ZulZula has started");
 
             _userLog = new LogWriterListView(_logListView);
-            TradeResult.Init();
+            
+            ThreadPool.QueueUserWorkItem(o => ExcelApplicationWrapper.Init());
 
             // init all stocks, from all time.
             _logger.DebugFormat("Starting to initialize stock factory");
-            _stockFactory.Initialize(_container, Enum.GetValues(typeof(StockName)).Cast<StockName>(), new DateTime(1984,02,15), DateTime.Now);
+            _stockFactory.Initialize(_container, Enum.GetValues(typeof (StockName)).Cast<StockName>(),
+                new DateTime(1984, 02, 15), DateTime.Now - TimeSpan.FromDays(7));
             _logger.DebugFormat("Finished to initialize stock factory");
-            foreach (StockName stockName in Enum.GetValues(typeof(StockName)))
+            foreach (StockName stockName in Enum.GetValues(typeof (StockName)))
             {
                 try
                 {
@@ -44,20 +44,10 @@ namespace ZulZula
                     _stocksListBox.Items.Add(stock);
                 }
                 catch (Exception ex)
-                { 
-                    //silent...
+                {
+                    _logger.Error("error in stock creation", ex);
                 }
             }
-            
-
-            //var dirInfo = new DirectoryInfo(string.Format("{0}\\..\\..\\src\\ZulZula\\LocalStocksData\\Yahoo", Environment.CurrentDirectory));
-            //var reader = new YahooDataProvider(_container);
-            //foreach (FileInfo fileInfo in dirInfo.EnumerateFiles())
-            //{
-            //    var stock = reader.GetStockFromLocal(fileInfo.FullName);
-            //    _stocksListBox.Items.Add(stock);
-            //}
-
 
             //init algorithms
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -74,16 +64,24 @@ namespace ZulZula
 
             _stocksListBox.SelectedIndex = 0;
             _algorithmsComboBox.SelectedIndex = 0;
+            _autoClearLogCheckbox.Checked = Properties.Settings.Default.AutoClearUserLog;
+
+            Closing += OnClose;
+        }
+
+        private void OnClose(object sender, CancelEventArgs e)
+        {
+            Properties.Settings.Default.AutoClearUserLog = _autoClearLogCheckbox.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void OnStockSelectionChanged(object sender, EventArgs e)
         {
-            var stock = (Stock) _stocksListBox.SelectedItem;
+            var stock = (Stock.Stock) _stocksListBox.SelectedItem;
             var firstEntry = stock.Rates.First();
             _fromDateTimePicker.Value = firstEntry.Date;
             var lastEntry = stock.Rates.Last();
             _toDateTimePicker.Value = lastEntry.Date;
-
             _goButton.Enabled = true;
         }
 
@@ -94,7 +92,7 @@ namespace ZulZula
                 _logListView.Items.Clear();
             }
 
-            var stock = (Stock) _stocksListBox.SelectedItem;
+            var stock = (Stock.Stock) _stocksListBox.SelectedItem;
             var alg = (ITradeAlgorithm) _algorithmsComboBox.SelectedItem;
             alg.Init(stock, _fromDateTimePicker.Value, _toDateTimePicker.Value, double.Parse(_arg0TextBox.Text),
                 double.Parse(_arg1TextBox.Text),
@@ -107,9 +105,9 @@ namespace ZulZula
         private void OnAlgorithmChanged(object sender, EventArgs e)
         {
             var alg = (ITradeAlgorithm) _algorithmsComboBox.SelectedItem;
-            _arg0TextBox.Text = alg.Arg0.ToString();
-            _arg1TextBox.Text = alg.Arg1.ToString();
-            _arg2TextBox.Text = alg.Arg2.ToString();
+            _arg0TextBox.Text = alg.Arg0.ToString(CultureInfo.InvariantCulture);
+            _arg1TextBox.Text = alg.Arg1.ToString(CultureInfo.InvariantCulture);
+            _arg2TextBox.Text = alg.Arg2.ToString(CultureInfo.InvariantCulture);
         }
 
         private void OnClearLogClick(object sender, EventArgs e)
@@ -130,7 +128,7 @@ namespace ZulZula
         private void OnAlgDescriptionButtonClick(object sender, EventArgs e)
         {
             var alg = (ITradeAlgorithm)_algorithmsComboBox.SelectedItem;
-            MessageBox.Show(alg.Description, alg + " Description");
+            MessageBox.Show(alg.Description, alg + @" Description");
         }
     }
 }

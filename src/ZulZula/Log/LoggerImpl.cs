@@ -1,98 +1,94 @@
-﻿using Microsoft.Practices.Unity;
+﻿using System;
+using Microsoft.Practices.Unity;
 using NLog;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ZulZula
+namespace ZulZula.Log
 {
     public class LoggerImpl: ILogger //Cant call this class Logger since Logger is nLog class :+(
     {
-        private Logger logger;
+        private readonly Logger _logger;
 
         //Constructors
         [InjectionConstructor]
         public LoggerImpl()
         {
-            logger = LogManager.GetCurrentClassLogger();
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public LoggerImpl(string loggerName)
         {
-            logger = LogManager.GetLogger(loggerName);
+            _logger = LogManager.GetLogger(loggerName);
         }
 
 
         //DEBUG Prints
         public void Debug(object message, Exception exception)
         {
-            logger.DebugException(message.ToString(), exception);
+            _logger.DebugException(message.ToString(), exception);
         }
         public void Debug(object message)
         {
-            logger.Debug(message.ToString());
+            _logger.Debug(message.ToString());
         }
         public void DebugFormat(string format, params object[] args)
         {
-            logger.Debug(format, args);
+            _logger.Debug(format, args);
         }
 
         //ERROR Prints
         public void Error(object message, Exception exception)
         {
-            logger.ErrorException(message.ToString(), exception);
+            _logger.ErrorException(message.ToString(), exception);
         }
         public void Error(object message)
         {
-            logger.Error(message.ToString());
+            _logger.Error(message.ToString());
         }
         public void ErrorFormat(string format, params object[] args)
         {
-            logger.Error(format, args);
+            _logger.Error(format, args);
         }
 
         //FATAL Prints
         public void Fatal(object message, Exception exception)
         {
-            logger.FatalException(message.ToString(), exception);
+            _logger.FatalException(message.ToString(), exception);
         }
         public void Fatal(object message)
         {
-            logger.Fatal(message.ToString());
+            _logger.Fatal(message.ToString());
         }
         public void FatalFormat(string format, params object[] args)
         {
-            logger.Fatal(format.ToString(), args);
+            _logger.Fatal(format, args);
         }
 
         //INFO Prints
         public void Info(object message, Exception exception)
         {
-            logger.InfoException(message.ToString(), exception);
+            _logger.InfoException(message.ToString(), exception);
         }
         public void Info(object message)
         {
-            logger.Info(message.ToString());
+            _logger.Info(message.ToString());
         }
         public void InfoFormat(string format, params object[] args)
         {
-            logger.Info(format.ToString(), args);
+            _logger.Info(format, args);
         }
 
         //WARN Prints
         public void Warn(object message, Exception exception)
         {
-            logger.WarnException(message.ToString(), exception);
+            _logger.WarnException(message.ToString(), exception);
         }
         public void Warn(object message)
         {
-            logger.Warn(message.ToString());
+            _logger.Warn(message.ToString());
         }
         public void WarnFormat(string format, params object[] args)
         {
-            logger.Warn(format.ToString(), args);
+            _logger.Warn(format, args);
         }
     }
     
