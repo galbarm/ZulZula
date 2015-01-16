@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace ZulZula.Stock
+namespace ZulZula.Stocks
 {
     public class Stock
     {

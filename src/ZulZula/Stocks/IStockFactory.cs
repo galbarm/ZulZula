@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Practices.Unity;
 
-namespace ZulZula.Stock
+namespace ZulZula.Stocks
 {
     interface IStockFactory
     {

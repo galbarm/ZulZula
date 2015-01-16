@@ -1,10 +1,10 @@
 ﻿using System;
-using ZulZula.Stock;
+using ZulZula.Stocks;
 
-namespace ZulZula
+namespace ZulZula.DataProviders
 {
     public interface IDataProvider
     {
-        Stock.Stock GetStock(StockName stockName, DateTime startDate, DateTime endDate);
+       Stock GetStock(StockName stockName, DateTime startDate, DateTime endDate);
     }
 }

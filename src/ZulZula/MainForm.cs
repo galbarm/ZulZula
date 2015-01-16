@@ -8,7 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
 using ZulZula.Log;
-using ZulZula.Stock;
+using ZulZula.Stocks;
 using ZulZula.TradeAlgorithms;
 
 namespace ZulZula
@@ -77,7 +77,7 @@ namespace ZulZula
 
         private void OnStockSelectionChanged(object sender, EventArgs e)
         {
-            var stock = (Stock.Stock) _stocksListBox.SelectedItem;
+            var stock = (Stock) _stocksListBox.SelectedItem;
             var firstEntry = stock.Rates.First();
             _fromDateTimePicker.Value = firstEntry.Date;
             var lastEntry = stock.Rates.Last();
@@ -92,7 +92,7 @@ namespace ZulZula
                 _logListView.Items.Clear();
             }
 
-            var stock = (Stock.Stock) _stocksListBox.SelectedItem;
+            var stock = (Stock) _stocksListBox.SelectedItem;
             var alg = (ITradeAlgorithm) _algorithmsComboBox.SelectedItem;
             alg.Init(stock, _fromDateTimePicker.Value, _toDateTimePicker.Value, double.Parse(_arg0TextBox.Text),
                 double.Parse(_arg1TextBox.Text),

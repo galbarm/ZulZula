@@ -56,6 +56,7 @@
       <HintPath>..\..\external\unity\Microsoft.Practices.Unity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NLog">
       <HintPath>..\..\external\nlog\2.0.0.2000\.NET Framework 4.0\NLog.dll</HintPath>
     </Reference>
@@ -71,20 +72,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataProviders\MayaDataProvider.cs" />
     <Compile Include="ExcelApplicationWrapper.cs" />
     <Compile Include="Log\ILogger.cs" />
     <Compile Include="Log\ILogWriter.cs" />
-    <Compile Include="Stock\HistoricalStockEntry.cs" />
-    <Compile Include="Stock\IStockEntry.cs" />
+    <Compile Include="Stocks\IStockEntry.cs" />
     <Compile Include="DataProviders\IDataProvider.cs" />
     <Compile Include="Log\LoggerImpl.cs" />
-    <Compile Include="Stock\IStockFactory.cs" />
-    <Compile Include="Stock\StockEntry.cs" />
-    <Compile Include="Stock\StockFactory.cs" />
+    <Compile Include="Stocks\IStockFactory.cs" />
+    <Compile Include="Stocks\StockEntry.cs" />
+    <Compile Include="Stocks\StockFactory.cs" />
     <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />
     <Compile Include="Log\LogWriterListView.cs" />
     <Compile Include="TradeAlgorithms\TradeResult.cs" />
-    <Compile Include="DataProviders\Yahoo\YahooDataProvider.cs" />
+    <Compile Include="DataProviders\YahooDataProvider.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -94,7 +95,7 @@
     <Compile Include="TradeAlgorithms\ITradeAlgorithm.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stock\Stock.cs" />
+    <Compile Include="Stocks\Stock.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>

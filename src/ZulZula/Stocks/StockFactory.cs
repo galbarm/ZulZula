@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Practices.Unity;
-using ZulZula.DataProviders.Yahoo;
+using ZulZula.DataProviders;
 using ZulZula.Log;
 
-namespace ZulZula.Stock
+namespace ZulZula.Stocks
 {
     public enum StockName
     {
@@ -16,10 +16,12 @@ namespace ZulZula.Stock
         Intel,
         Apple,
         Cisco,
+        //טבע
     }
     public enum DataProvider
     { 
-        Yahoo
+        Yahoo,
+        Maya
     }
 
     internal class StockFactory : IStockFactory
@@ -90,6 +92,7 @@ namespace ZulZula.Stock
         private void MapStockReaders() 
         {
             _dataProviders[DataProvider.Yahoo] = new YahooDataProvider(_container);
+            _dataProviders[DataProvider.Maya] = new MayaDataProvider(_container);
         }
     }
 }
