@@ -15,9 +15,9 @@ namespace ZulZula.Stocks
         Cadence,
         Intel,
         Apple,
-        Cisco,
-        //טבע
+        Cisco
     }
+
     public enum DataProvider
     { 
         Yahoo,

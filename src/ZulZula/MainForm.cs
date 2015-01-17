@@ -1,5 +1,5 @@
 ﻿using System.Globalization;
-using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
@@ -24,15 +24,51 @@ namespace ZulZula
         {
             InitializeComponent();
             InitializeContainer();
-
-            _logger.Debug("ZulZula has started");
-
-            _userLog = new LogWriterListView(_logListView);
             
-            ThreadPool.QueueUserWorkItem(o => ExcelApplicationWrapper.Init());
+            _logger.Debug("ZulZula has started");
+            
+            _Spinner.Image = Properties.Resources.spinner;
+            
+            _userLog = new LogWriterListView(_logListView);
 
-            // init all stocks, from all time.
+            Task.Run(() => Init());
+
+            Closing += OnClose;
+        }
+
+        private void Init()
+        {
+            var t1 = Task.Run(() => ExcelApplicationWrapper.Init());
+            var t2 = Task.Run(() => InitStocks());
+            var t3 = Task.Run(() => InitAlgorithms());
+
+            Task.WaitAll(t1, t2, t3);
+
+            PostInit();
+        }
+
+        private void PostInit()
+        {
+
+            if (InvokeRequired)
+            {
+                BeginInvoke(new MethodInvoker(PostInit));
+                return;
+            }
+
+            _stocksListBox.SelectedIndex = 0;
+            _algorithmsComboBox.SelectedIndex = 0;
+            _autoClearLogCheckbox.Checked = Properties.Settings.Default.AutoClearUserLog;
+            _loadingLabel.Visible = false;
+            _Spinner.Image = null;
+        }
+
+        private void InitStocks()
+        {
             _logger.DebugFormat("Starting to initialize stock factory");
+
+            var stocks = new List<Stock>();
+
             _stockFactory.Initialize(_container, Enum.GetValues(typeof (StockName)).Cast<StockName>(),
                 new DateTime(1984, 02, 15), DateTime.Now - TimeSpan.FromDays(7));
             _logger.DebugFormat("Finished to initialize stock factory");
@@ -41,7 +77,7 @@ namespace ZulZula
                 try
                 {
                     var stock = _stockFactory.GetStock(stockName);
-                    _stocksListBox.Items.Add(stock);
+                    stocks.Add(stock);
                 }
                 catch (Exception ex)
                 {
@@ -49,24 +85,54 @@ namespace ZulZula
                 }
             }
 
-            //init algorithms
+            UpdateStocksListBox(stocks);
+        }
+
+        private void UpdateStocksListBox(IEnumerable<Stock> stocks)
+        {
+            if (_stocksListBox.InvokeRequired)
+            {
+                _stocksListBox.Invoke(new MethodInvoker(() => UpdateStocksListBox(stocks)));
+                return;
+            }
+
+            foreach (var stock in stocks)
+            {
+                _stocksListBox.Items.Add(stock);
+            }
+        }
+
+        private void InitAlgorithms()
+        {
+            var algs = new List<ITradeAlgorithm>();
+
             Assembly assembly = Assembly.GetExecutingAssembly();
-            IEnumerable<Type> algos = assembly.GetTypes().Where(type => typeof (ITradeAlgorithm).IsAssignableFrom(type));
+            IEnumerable<Type> algos = assembly.GetTypes().Where(type => typeof(ITradeAlgorithm).IsAssignableFrom(type));
 
             foreach (Type type in algos)
             {
                 if (type.IsClass)
                 {
-                    var alg = (ITradeAlgorithm) Activator.CreateInstance(type);
-                    _algorithmsComboBox.Items.Add(alg);
+                    var alg = (ITradeAlgorithm)Activator.CreateInstance(type);
+                    algs.Add(alg);
                 }
             }
 
-            _stocksListBox.SelectedIndex = 0;
-            _algorithmsComboBox.SelectedIndex = 0;
-            _autoClearLogCheckbox.Checked = Properties.Settings.Default.AutoClearUserLog;
+            UpdateAlgorithmsComboBox(algs);
+        }
 
-            Closing += OnClose;
+        private void UpdateAlgorithmsComboBox(IEnumerable<ITradeAlgorithm> algs)
+        {
+            if (_algorithmsComboBox.InvokeRequired)
+            {
+                _algorithmsComboBox.Invoke(new MethodInvoker(() => UpdateAlgorithmsComboBox(algs)));
+                return;
+            }
+
+            foreach (var alg in algs)
+            {
+                _algorithmsComboBox.Items.Add(alg);
+            }
         }
 
         private void OnClose(object sender, CancelEventArgs e)

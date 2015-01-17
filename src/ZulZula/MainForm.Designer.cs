@@ -48,6 +48,9 @@
             this._clearLogButton = new System.Windows.Forms.Button();
             this._algDescriptionButton = new System.Windows.Forms.Button();
             this._autoClearLogCheckbox = new System.Windows.Forms.CheckBox();
+            this._Spinner = new System.Windows.Forms.PictureBox();
+            this._loadingLabel = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this._Spinner)).BeginInit();
             this.SuspendLayout();
             // 
             // _stocksListBox
@@ -229,11 +232,31 @@
             this._autoClearLogCheckbox.Text = "auto clear";
             this._autoClearLogCheckbox.UseVisualStyleBackColor = true;
             // 
+            // _Spinner
+            // 
+            this._Spinner.Location = new System.Drawing.Point(519, 98);
+            this._Spinner.Name = "_Spinner";
+            this._Spinner.Size = new System.Drawing.Size(100, 100);
+            this._Spinner.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this._Spinner.TabIndex = 20;
+            this._Spinner.TabStop = false;
+            // 
+            // _loadingLabel
+            // 
+            this._loadingLabel.AutoSize = true;
+            this._loadingLabel.Location = new System.Drawing.Point(516, 82);
+            this._loadingLabel.Name = "_loadingLabel";
+            this._loadingLabel.Size = new System.Drawing.Size(52, 13);
+            this._loadingLabel.TabIndex = 21;
+            this._loadingLabel.Text = "Loadng...";
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(712, 594);
+            this.Controls.Add(this._loadingLabel);
+            this.Controls.Add(this._Spinner);
             this.Controls.Add(this._autoClearLogCheckbox);
             this.Controls.Add(this._algDescriptionButton);
             this.Controls.Add(this._clearLogButton);
@@ -255,6 +278,7 @@
             this.Controls.Add(this._stocksListBox);
             this.Name = "MainForm";
             this.Text = "ZulZula";
+            ((System.ComponentModel.ISupportInitialize)(this._Spinner)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -282,6 +306,8 @@
         private System.Windows.Forms.Button _clearLogButton;
         private System.Windows.Forms.Button _algDescriptionButton;
         private System.Windows.Forms.CheckBox _autoClearLogCheckbox;
+        private System.Windows.Forms.PictureBox _Spinner;
+        private System.Windows.Forms.Label _loadingLabel;
     }
 }
 
