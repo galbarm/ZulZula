@@ -53,7 +53,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\src\ZulZula\ZulZula.csproj">
+    <ProjectReference Include="..\ZulZula\ZulZula.csproj">
       <Project>{aa9dcc57-e4f1-4bb0-9925-0d3661ceb98b}</Project>
       <Name>ZulZula</Name>
     </ProjectReference>
