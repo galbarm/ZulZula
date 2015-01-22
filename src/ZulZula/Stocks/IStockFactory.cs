@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.Unity;
 
 namespace ZulZula.Stocks
 {
-    interface IStockFactory
+    public interface IStockFactory
     {
-        void Initialize(IUnityContainer container, IEnumerable<StockName> stockSymbols, DateTime startDate, DateTime endDate);
+        void Initialize(IEnumerable<StockName> stockSymbols, DateTime startDate, DateTime endDate);
         string ConvertNameToSymbol(StockName name);
         Stock GetStock(StockName name);
     }

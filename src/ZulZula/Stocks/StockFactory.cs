@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using Microsoft.Practices.Unity;
 using ZulZula.DataProviders;
-using ZulZula.Log;
 
 namespace ZulZula.Stocks
 {
@@ -27,19 +25,15 @@ namespace ZulZula.Stocks
     internal class StockFactory : IStockFactory
     {
         private readonly Dictionary<StockName, Stock> _stockHolder = new Dictionary<StockName, Stock>();
-        private IUnityContainer _container;
-        private ILogger _logger;
         private readonly IDictionary<StockName, string> _stockNameToSymbolMap = new Dictionary<StockName, string>();
 
         //We currently receive data from yahoo, so there is only 1 stock reader available. if later on we will need additional data, or yahoo will be down.. implement additional
         private readonly IDictionary<DataProvider, IDataProvider> _dataProviders = new Dictionary<DataProvider, IDataProvider>();
         private const DataProvider DefaultDataProvider = DataProvider.Yahoo;
 
-        public void Initialize(IUnityContainer container, IEnumerable<StockName> stocks, DateTime startDate, DateTime endDate)
+        public void Initialize(IEnumerable<StockName> stocks, DateTime startDate,
+            DateTime endDate)
         {
-            _container = container;
-            _logger = _container.Resolve<ILogger>();
-
             MapStockReaders();
             FillStockNameToSymbol();
 
@@ -49,15 +43,8 @@ namespace ZulZula.Stocks
                 if (!_stockHolder.ContainsKey(singleStock))
                 {
                     //Does not exist.. lets do it
-                    try
-                    {
-                        var stockData = _dataProviders[DefaultDataProvider].GetStock(singleStock, startDate, endDate);
-                        _stockHolder[singleStock] = stockData;
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.Error(string.Format("Stock Factory did not add data for stock={0}, continue to next stock..", singleStock), ex);
-                    }
+                    var stockData = _dataProviders[DefaultDataProvider].GetStock(singleStock, startDate, endDate);
+                    _stockHolder[singleStock] = stockData;
                 }
             }
         }
@@ -91,8 +78,8 @@ namespace ZulZula.Stocks
 
         private void MapStockReaders() 
         {
-            _dataProviders[DataProvider.Yahoo] = new YahooDataProvider(_container);
-            _dataProviders[DataProvider.Maya] = new MayaDataProvider(_container);
+            _dataProviders[DataProvider.Yahoo] = new YahooDataProvider(this);
+            _dataProviders[DataProvider.Maya] = new MayaDataProvider(this);
         }
     }
 }

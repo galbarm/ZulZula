@@ -1,6 +1,5 @@
 ﻿using System.Globalization;
 using System.Threading.Tasks;
-using Microsoft.Practices.Unity;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -15,22 +14,16 @@ namespace ZulZula
 {
     public partial class MainForm : Form
     {
-        private ILogger _logger;
         private readonly ILogWriter _userLog;
-        private readonly IUnityContainer _container = new UnityContainer();
-        private IStockFactory _stockFactory;
+        private readonly IStockFactory _stockFactory = new StockFactory();
 
         public MainForm()
         {
             InitializeComponent();
-            InitializeContainer();
-            
-            _logger.Debug("ZulZula has started");
             
             _Spinner.Image = Properties.Resources.spinner;
-            
             _userLog = new LogWriterListView(_logListView);
-
+            
             Task.Run(() => Init());
 
             Closing += OnClose;
@@ -65,24 +58,14 @@ namespace ZulZula
 
         private void InitStocks()
         {
-            _logger.DebugFormat("Starting to initialize stock factory");
-
             var stocks = new List<Stock>();
 
-            _stockFactory.Initialize(_container, Enum.GetValues(typeof (StockName)).Cast<StockName>(),
+            _stockFactory.Initialize(Enum.GetValues(typeof (StockName)).Cast<StockName>(),
                 new DateTime(1984, 02, 15), DateTime.Now - TimeSpan.FromDays(7));
-            _logger.DebugFormat("Finished to initialize stock factory");
             foreach (StockName stockName in Enum.GetValues(typeof (StockName)))
             {
-                try
-                {
-                    var stock = _stockFactory.GetStock(stockName);
-                    stocks.Add(stock);
-                }
-                catch (Exception ex)
-                {
-                    _logger.Error("error in stock creation", ex);
-                }
+                var stock = _stockFactory.GetStock(stockName);
+                stocks.Add(stock);
             }
 
             UpdateStocksListBox(stocks);
@@ -179,16 +162,6 @@ namespace ZulZula
         private void OnClearLogClick(object sender, EventArgs e)
         {
             _logListView.Items.Clear();
-        }
-
-        private void InitializeContainer()
-        {
-            _logger = new LoggerImpl();
-            _container.RegisterInstance(typeof(ILogger), _logger);
-
-            IStockFactory stockFactory = new StockFactory();
-            _container.RegisterInstance(typeof(IStockFactory), stockFactory);
-            _stockFactory = stockFactory;
         }
 
         private void OnAlgDescriptionButtonClick(object sender, EventArgs e)

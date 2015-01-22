@@ -52,14 +52,7 @@
     <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
       <EmbedInteropTypes>True</EmbedInteropTypes>
     </Reference>
-    <Reference Include="Microsoft.Practices.Unity">
-      <HintPath>..\..\external\unity\Microsoft.Practices.Unity.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
-    <Reference Include="NLog">
-      <HintPath>..\..\external\nlog\2.0.0.2000\.NET Framework 4.0\NLog.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -74,11 +67,9 @@
   <ItemGroup>
     <Compile Include="DataProviders\MayaDataProvider.cs" />
     <Compile Include="ExcelApplicationWrapper.cs" />
-    <Compile Include="Log\ILogger.cs" />
     <Compile Include="Log\ILogWriter.cs" />
     <Compile Include="Stocks\IStockEntry.cs" />
     <Compile Include="DataProviders\IDataProvider.cs" />
-    <Compile Include="Log\LoggerImpl.cs" />
     <Compile Include="Stocks\IStockFactory.cs" />
     <Compile Include="Stocks\StockEntry.cs" />
     <Compile Include="Stocks\StockFactory.cs" />
@@ -120,7 +111,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">

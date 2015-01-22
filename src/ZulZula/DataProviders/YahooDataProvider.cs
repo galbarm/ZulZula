@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using Microsoft.Practices.Unity;
-using ZulZula.Log;
 using ZulZula.Stocks;
 
 namespace ZulZula.DataProviders
@@ -20,12 +18,10 @@ namespace ZulZula.DataProviders
     public class YahooDataProvider : IDataProvider
     {
         private readonly IStockFactory _stockFactory;
-        private readonly ILogger _logger;
         
-        public YahooDataProvider(IUnityContainer container)
+        public YahooDataProvider(IStockFactory stockFactory)
         {
-            _logger = container.Resolve<ILogger>();
-            _stockFactory = container.Resolve<IStockFactory>();
+            _stockFactory = stockFactory;
         }
 
         private List<IStockEntry> GetStockFromRemote(StockName stockName, DateTime startDate, DateTime endData)
@@ -41,12 +37,10 @@ namespace ZulZula.DataProviders
 
             using (var web = new WebClient())
             {
-                _logger.DebugFormat("{0} is about to get data from remote URL", GetType().Name);
                 string downloadString =
                     string.Format("http://ichart.finance.yahoo.com/table.csv?s={0}&a={1}&b={2}&c={3}&d={4}&e={5}&f={6}",
                         _stockFactory.ConvertNameToSymbol(stockName), a, b, c, d, e, f);
                 string data = web.DownloadString(downloadString);
-                _logger.DebugFormat("received string, Length={0}", data.Length);
                 data = data.Replace("r", "");
 
                 string[] rows = data.Split('\n');
@@ -78,23 +72,14 @@ namespace ZulZula.DataProviders
             List<IStockEntry> rates;
             if (!File.Exists(fullPath))
             {
-                try
+                rates = GetStockFromRemote(stockName, startDate, endDate);
+                Directory.CreateDirectory(dir);
+                using (Stream stream = File.Open(fullPath, FileMode.Create))
                 {
-                    rates = GetStockFromRemote(stockName, startDate, endDate);
-                    Directory.CreateDirectory(dir);
-                    using (Stream stream = File.Open(fullPath, FileMode.Create))
-                    {
-                        var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
-                        bformatter.Serialize(stream, rates);
-                    }
+                    var bformatter = new System.Runtime.Serialization.Formatters.Binary.BinaryFormatter();
+                    bformatter.Serialize(stream, rates);
                 }
-                catch (Exception ex)
-                {
-                    _logger.ErrorFormat(
-                        "Failed to get stock data to for stock={0}, StartDate={1}, EndDate={2}, Exception Message={3}",
-                        stockName, startDate, endDate, ex.Message);
-                    throw;
-                }
+
             }
             else
             {
