@@ -8,10 +8,6 @@ namespace ZulZula.DataProviders
 {
     public class MayaDataProvider : IDataProvider
     {
-        public MayaDataProvider(IStockFactory stockFactory)
-        {
-        }
-
         public Stock GetStock(StockName stockName, DateTime startDate, DateTime endDate)
         {
             string dir = String.Format(@"..\..\StockData\Maya");

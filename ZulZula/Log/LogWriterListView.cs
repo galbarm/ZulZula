@@ -13,11 +13,13 @@ namespace ZulZula.Log
 
         public void Write(string message)
         {
-            if (_listView != null)
+            if (_listView == null)
             {
-                _listView.Items.Add(message);
-                _listView.Items[_listView.Items.Count - 1].EnsureVisible();
+                return;
             }
+
+            _listView.Items.Add(message);
+            _listView.Items[_listView.Items.Count - 1].EnsureVisible();
         }
     }
 }

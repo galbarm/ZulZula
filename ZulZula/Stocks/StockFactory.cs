@@ -79,7 +79,7 @@ namespace ZulZula.Stocks
         private void MapStockReaders() 
         {
             _dataProviders[DataProvider.Yahoo] = new YahooDataProvider(this);
-            _dataProviders[DataProvider.Maya] = new MayaDataProvider(this);
+            _dataProviders[DataProvider.Maya] = new MayaDataProvider();
         }
     }
 }
