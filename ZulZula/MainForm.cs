@@ -42,7 +42,6 @@ namespace ZulZula
 
         private void PostInit()
         {
-
             if (InvokeRequired)
             {
                 BeginInvoke(new MethodInvoker(PostInit));

@@ -14,20 +14,41 @@ namespace ZulZula.Stocks
             Low = low;
             Close = close;
             Volume = volume;
-            AdjClose = adjClose;
+            CloseAdj = adjClose;
         }
 
         public DateTime Date { get; private set; }
-        public double Open { get; private set; }
-        public double High { get; private set; }
-        public double Low { get; private set; }
-        public double Close { get; private set; }
-        public double Volume { get; private set; }
-        public double AdjClose { get; private set; }
 
-        public double Adj
+        public double Open { get; private set; }
+
+        public double OpenAdj
         {
-            get { return Close/AdjClose; }
+            get { return Open/Adj; }
+        }
+
+        public double High { get; private set; }
+
+        public double HighAdj
+        {
+            get { return High/Adj; }
+        }
+
+        public double Low { get; private set; }
+
+        public double LowAdj
+        {
+            get { return Low/Adj; }
+        }
+
+        public double Close { get; private set; }
+        public double CloseAdj { get; private set; }
+
+        public double Volume { get; private set; }
+
+
+        private double Adj
+        {
+            get { return Close/CloseAdj; }
         }
     }
 }

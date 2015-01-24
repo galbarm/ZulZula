@@ -36,7 +36,7 @@ namespace ZulZula.TradeAlgorithms
             var start = _stock.DateToIndex(_fromDate, true);
             var end = _stock.DateToIndex(_toDate, false);
 
-            _logWriter.Write(string.Format("Start Price = {0} on {1}", _stock.Rates[start].Open,
+            _logWriter.Write(string.Format("Start Price = {0:0.00} on {1}", _stock.Rates[start].OpenAdj,
                 _stock.Rates[start].Date.ToString("d")));
 
             for (var i = start+1; i < end-1; i++)
@@ -47,42 +47,42 @@ namespace ZulZula.TradeAlgorithms
 
                 //buy
                 // ReSharper disable once CompareOfFloatsByEqualityOperator
-                if (shares == 0 & (((yesterday.AdjClose - today.AdjClose) / yesterday.AdjClose) * 100 >= _fallThreshold))
+                if (shares == 0 & (((yesterday.CloseAdj - today.CloseAdj) / yesterday.CloseAdj) * 100 >= _fallThreshold))
                 {
-                    shares = cash/tomorrow.Open;
+                    shares = cash/tomorrow.OpenAdj;
                     result.NumberOfTrades++;
 
                     buyDate = tomorrow.Date;
 
                     _logWriter.Write(
-                        string.Format("Buying on {0}, at price {1}, because priced dropped by {2} [({3}) -> ({4})]",
+                        string.Format("Buying on {0}, at price {1:0.00}, because priced dropped by {2} [({3}) -> ({4})]",
                             tomorrow.Date.ToString("d"),
-                            tomorrow.Open,
-                            ((yesterday.AdjClose - today.AdjClose) / yesterday.AdjClose).ToString("P"),
-                            yesterday.AdjClose,
-                            today.AdjClose));
+                            tomorrow.OpenAdj,
+                            ((yesterday.CloseAdj - today.CloseAdj) / yesterday.CloseAdj).ToString("P"),
+                            yesterday.CloseAdj,
+                            today.CloseAdj));
 
                     continue;
                 }
 
                 //sell
-                if (shares > 0 & (((today.AdjClose - yesterday.AdjClose) / yesterday.AdjClose) * 100 >= _raiseThreshold))
+                if (shares > 0 & (((today.CloseAdj - yesterday.CloseAdj) / yesterday.CloseAdj) * 100 >= _raiseThreshold))
                 {
                     var cashBefore = cash;
-                    cash = shares*tomorrow.Open;
+                    cash = shares * tomorrow.OpenAdj;
                     result.NumberOfTrades++;
 
                     result.DaysIn += (int) (tomorrow.Date - buyDate).TotalDays;
 
                     _logWriter.Write(
                         string.Format(
-                            "Selling on {0}, at price {1} (that's {2}), because priced increased by {3} [({4}) -> ({5})]",
+                            "Selling on {0}, at price {1:0.00} (that's {2}), because priced increased by {3} [({4}) -> ({5})]",
                             tomorrow.Date.ToString("d"),
-                            tomorrow.Open,
+                            tomorrow.OpenAdj,
                             ((cash - cashBefore)/cashBefore).ToString("P"),
-                            ((today.AdjClose - yesterday.AdjClose) / yesterday.AdjClose).ToString("P"),
-                            yesterday.AdjClose,
-                            today.AdjClose));
+                            ((today.CloseAdj - yesterday.CloseAdj) / yesterday.CloseAdj).ToString("P"),
+                            yesterday.CloseAdj,
+                            today.CloseAdj));
 
                     shares = 0;
                 }
@@ -93,22 +93,22 @@ namespace ZulZula.TradeAlgorithms
             if (shares > 0)
             {
                 var cashBefore = cash;
-                cash = shares*_stock.Rates[end].Open;
+                cash = shares*_stock.Rates[end].OpenAdj;
                 result.NumberOfTrades++;
                 result.DaysIn += (int) (_stock.Rates[end].Date - buyDate).TotalDays;
 
-                _logWriter.Write(string.Format("Selling on {0}, at price {1} (that's {2}), because reached last day",
-                    _stock.Rates[end].Date.ToString("d"), _stock.Rates[end].Open,
+                _logWriter.Write(string.Format("Selling on {0}, at price {1:0.00} (that's {2}), because reached last day",
+                    _stock.Rates[end].Date.ToString("d"), _stock.Rates[end].OpenAdj,
                     ((cash - cashBefore)/cashBefore).ToString("P")));
             }
 
 
-            _logWriter.Write(string.Format("End Price = {0} on {1}", _stock.Rates[end].AdjClose,
+            _logWriter.Write(string.Format("End Price = {0:0.00} on {1}", _stock.Rates[end].CloseAdj,
                 _stock.Rates[end].Date.ToString("d")));
 
-            result.Return = (cash - 1);
+            result.Return = cash - 1;
             result.TotalDays = (int)(_stock.Rates[end].Date - _stock.Rates[start].Date).TotalDays;
-            result.StockReturn = ((_stock.Rates[end].AdjClose - _stock.Rates[start].AdjClose) / _stock.Rates[start].AdjClose);
+            result.StockReturn = ((_stock.Rates[end].CloseAdj - _stock.Rates[start].CloseAdj) / _stock.Rates[start].CloseAdj);
 
             return result;
         }
