@@ -49,7 +49,7 @@ namespace ZulZula
             }
 
             _stocksListBox.SelectedIndex = 0;
-            _algorithmsComboBox.SelectedIndex = 0;
+            _algorithmsComboBox.SelectedIndex = 1;
             _autoClearLogCheckbox.Checked = Properties.Settings.Default.AutoClearUserLog;
             _loadingLabel.Visible = false;
             _Spinner.Image = null;

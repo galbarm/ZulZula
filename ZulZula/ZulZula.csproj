@@ -75,6 +75,7 @@
     <Compile Include="Stocks\StockFactory.cs" />
     <Compile Include="TradeAlgorithms\BuyAfterFallTradeAlgorithm.cs" />
     <Compile Include="Log\LogWriterListView.cs" />
+    <Compile Include="TradeAlgorithms\StatisticsAlgorithm.cs" />
     <Compile Include="TradeAlgorithms\TradeResult.cs" />
     <Compile Include="DataProviders\YahooDataProvider.cs" />
     <Compile Include="MainForm.cs">
