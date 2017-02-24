@@ -14,7 +14,9 @@ namespace ZulZula.Stocks
         Intel,
         Apple,
         Cisco,
-        SPY
+        SPY,
+        FDX,
+        VT
     }
 
     public enum DataProvider
@@ -76,6 +78,8 @@ namespace ZulZula.Stocks
             _stockNameToSymbolMap[StockName.Apple] = "AAPL";
             _stockNameToSymbolMap[StockName.Cisco] = "CSCO";
             _stockNameToSymbolMap[StockName.SPY] = "SPY";
+            _stockNameToSymbolMap[StockName.FDX] = "FDX";
+            _stockNameToSymbolMap[StockName.VT] = "VT";
         }
 
         private void MapStockReaders() 

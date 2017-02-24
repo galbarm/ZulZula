@@ -26,9 +26,29 @@ namespace ZulZula.TradeAlgorithms
 
         public TradeResult CalculateReturn()
         {
+            NoGoingBackDays();
             Peeks();
             PositiveVsNegative();
             return new TradeResult();
+        }
+
+        private void NoGoingBackDays()
+        {
+            int counter = 0;
+            foreach (IStockEntry entry in _stock.Rates)
+            {
+                counter++;
+                foreach (IStockEntry cand in _stock.Rates)
+                {
+                    if (cand.Date > entry.Date & cand.CloseAdj < entry.CloseAdj)
+                    {
+                        counter--;
+                        break;
+                    }
+                }
+            }
+
+            _logWriter.Write(string.Format("Total days without going back: {0} out of total {1} trading days. That is {2}", counter, _stock.Rates.Count, ((double)counter / _stock.Rates.Count).ToString("P")));
         }
 
         private void Peeks()
